@@ -1,1 +1,1 @@
-<?php if ($this->raw !== -1): ?><?php echo $this->raw; ?><?php endif; ?>
+<?php if ($this->raw !== -1): ?><?= $this->raw; ?><?php endif; ?>
