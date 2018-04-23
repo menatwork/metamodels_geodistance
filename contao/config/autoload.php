@@ -22,7 +22,7 @@
 /**
  * Register the templates
  */
-TemplateLoader::addFiles(
+\Contao\TemplateLoader::addFiles(
     [
         'mm_attr_geodistance' => 'system/modules/metamodelsattribute_geodistance/templates',
     ]

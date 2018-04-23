@@ -21,6 +21,8 @@
 
 namespace MetaModels\Attribute\GeoDistance;
 
+use Contao\Database;
+use Contao\Input;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Helper\Perimetersearch\LookUp\Provider\Container;
@@ -77,8 +79,8 @@ class GeoDistance extends BaseComplex
         }
 
         // Get the params.
-        $geo  = \Input::get($getGeo);
-        $land = (\Input::get($getLand)) ?: '';
+        $geo  = Input::get($getGeo);
+        $land = (Input::get($getLand)) ?: '';
 
         // Check if we have some geo params.
         if (empty($geo) && empty($land)) {
@@ -150,7 +152,7 @@ class GeoDistance extends BaseComplex
             implode(', ', $idList)
         );
 
-        $objResult = \Database::getInstance()
+        $objResult = Database::getInstance()
                               ->prepare($subSQL)
                               ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
@@ -215,7 +217,7 @@ class GeoDistance extends BaseComplex
             $this->getMetaModel()->getTableName()
         );
 
-        $objResult = \Database::getInstance()
+        $objResult = Database::getInstance()
                               ->prepare($subSQL)
                               ->execute($intDist);
 
