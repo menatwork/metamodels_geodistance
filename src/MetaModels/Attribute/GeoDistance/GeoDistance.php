@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_alias.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@
  * @package    MetaModels
  * @subpackage AttributeGeoDistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -39,7 +40,7 @@ class GeoDistance extends BaseComplex
      *
      * @var array
      */
-    protected static $data = array();
+    protected static $data = [];
 
     /**
      * Retrieve the database.
@@ -153,7 +154,7 @@ class GeoDistance extends BaseComplex
                               ->prepare($subSQL)
                               ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
-        $newIdList = array();
+        $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
             $id              = $item['item_id'];
             $distance        = $item['item_dist'];
@@ -218,7 +219,7 @@ class GeoDistance extends BaseComplex
                               ->prepare($subSQL)
                               ->execute($intDist);
 
-        $newIdList = array();
+        $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
             $id              = $item['id'];
             $distance        = $item['item_dist'];
@@ -362,7 +363,7 @@ class GeoDistance extends BaseComplex
     {
         return array_merge(
             parent::getAttributeSettingNames(),
-            array(
+            [
                 'mandatory',
                 'filterable',
                 'searchable',
@@ -373,16 +374,16 @@ class GeoDistance extends BaseComplex
                 'single_attr_id',
                 'first_attr_id',
                 'second_attr_id'
-            )
+            ]
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -420,7 +421,7 @@ class GeoDistance extends BaseComplex
      */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -433,7 +434,7 @@ class GeoDistance extends BaseComplex
      */
     public function getDataFor($arrIds)
     {
-        $return = array();
+        $return = [];
         foreach ($arrIds as $id) {
             if (isset(self::$data[$id])) {
                 $return[$id] = self::$data[$id];

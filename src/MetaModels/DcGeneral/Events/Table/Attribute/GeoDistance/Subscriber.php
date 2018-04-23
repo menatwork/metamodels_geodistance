@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_alias.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@
  * @package    MetaModels
  * @subpackage AttributeGeoDistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -38,11 +39,11 @@ class Subscriber extends BaseSubscriber
         $this
             ->addListener(
                 GetPropertyOptionsEvent::NAME,
-                array($this, 'getAttributeIdOptions')
+                [$this, 'getAttributeIdOptions']
             )
             ->addListener(
                 GetOptionsEvent::NAME,
-                array($this, 'getResolverClass')
+                [$this, 'getResolverClass']
             );
     }
 
@@ -82,14 +83,14 @@ class Subscriber extends BaseSubscriber
     public function getAttributeIdOptions(GetPropertyOptionsEvent $event)
     {
         // Check the context.
-        $allowedProperties = array('first_attr_id', 'second_attr_id', 'single_attr_id');
+        $allowedProperties = ['first_attr_id', 'second_attr_id', 'single_attr_id'];
         if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
         ) {
             return;
         }
 
 
-        $result      = array();
+        $result      = [];
         $model       = $event->getModel();
         $metaModelId = $model->getProperty('pid');
         if (!$metaModelId) {
@@ -111,13 +112,13 @@ class Subscriber extends BaseSubscriber
             ->getFilterFactory()
             ->getTypeFactory($model->getProperty('type'));
 
-        $typeFilter = array();
+        $typeFilter = [];
         if ($typeFactory) {
             $typeFilter = $typeFactory->getKnownAttributeTypes();
         }
 
         if ($event->getPropertyName() === 'single_attr_id') {
-            $typeFilter = array('geolocation');
+            $typeFilter = ['geolocation'];
         } else {
             $key = array_search('geolocation', $typeFilter);
             if ($key !== null) {
@@ -149,14 +150,14 @@ class Subscriber extends BaseSubscriber
     public function getResolverClass(GetOptionsEvent $event)
     {
         // Check the context.
-        $allowedProperties = array('lookupservice');
+        $allowedProperties = ['lookupservice'];
         if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
         ) {
             return;
         }
 
         $arrClasses = (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'];
-        $arrReturn  = array();
+        $arrReturn  = [];
         foreach (array_keys($arrClasses) as $name) {
             $arrReturn[$name] = (isset($GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]))
                 ? $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['perimetersearch'][$name]
