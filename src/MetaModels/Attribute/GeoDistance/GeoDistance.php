@@ -149,7 +149,7 @@ class GeoDistance extends BaseComplex
             ORDER BY item_dist',
             $lat,
             $lng,
-            implode(', ', $idList)
+            \implode(', ', $idList)
         );
 
         $objResult = $this->getDataBase()
@@ -164,9 +164,9 @@ class GeoDistance extends BaseComplex
             self::$data[$id] = $distance;
         }
 
-        $diff = array_diff($idList, $newIdList);
+        $diff = \array_diff($idList, $newIdList);
 
-        return array_merge($newIdList, $diff);
+        return \array_merge($newIdList, $diff);
     }
 
     /**
@@ -188,7 +188,7 @@ class GeoDistance extends BaseComplex
         $lat     = $container->getLatitude();
         $lng     = $container->getLongitude();
         $intDist = $container->getDistance();
-        $subSQL  = sprintf(
+        $subSQL  = \sprintf(
             'SELECT
                 id,
                 round
@@ -213,7 +213,7 @@ class GeoDistance extends BaseComplex
             $lng,
             $latAttribute->getColName(),
             $longAttribute->getColName(),
-            implode(', ', $idList),
+            \implode(', ', $idList),
             $this->getMetaModel()->getTableName()
         );
 
@@ -229,9 +229,9 @@ class GeoDistance extends BaseComplex
             self::$data[$id] = $distance;
         }
 
-        $diff = array_diff($idList, $newIdList);
+        $diff = \array_diff($idList, $newIdList);
 
-        return array_merge($newIdList, $diff);
+        return \array_merge($newIdList, $diff);
     }
 
     /**
@@ -246,8 +246,8 @@ class GeoDistance extends BaseComplex
     protected function lookupGeo($strAddress, $strCountry)
     {
         // Trim the data. Better!
-        $strAddress = trim($strAddress);
-        $strCountry = trim($strCountry);
+        $strAddress = \trim($strAddress);
+        $strCountry = \trim($strCountry);
 
         // First check cache.
         $objCacheResult = $this->getFromCache($strAddress, $strCountry);
@@ -256,7 +256,7 @@ class GeoDistance extends BaseComplex
         }
 
         // If there is no data from the cache ask google.
-        $arrLookupServices = deserialize($this->get('lookupservice'), true);
+        $arrLookupServices = \deserialize($this->get('lookupservice'), true);
         if (!count($arrLookupServices)) {
             return false;
         }
@@ -363,7 +363,7 @@ class GeoDistance extends BaseComplex
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
             [
                 'mandatory',
