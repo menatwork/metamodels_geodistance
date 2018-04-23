@@ -47,7 +47,7 @@ class GeoDistance extends BaseComplex
     /**
      * Retrieve the database.
      *
-     * @return \Contao\Database
+     * @return Database
      */
     private function getDataBase()
     {
@@ -152,9 +152,9 @@ class GeoDistance extends BaseComplex
             implode(', ', $idList)
         );
 
-        $objResult = Database::getInstance()
-                              ->prepare($subSQL)
-                              ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
+        $objResult = $this->getDataBase()
+                            ->prepare($subSQL)
+                            ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
         $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
@@ -217,9 +217,9 @@ class GeoDistance extends BaseComplex
             $this->getMetaModel()->getTableName()
         );
 
-        $objResult = Database::getInstance()
-                              ->prepare($subSQL)
-                              ->execute($intDist);
+        $objResult = $this->getDataBase()
+                            ->prepare($subSQL)
+                            ->execute($intDist);
 
         $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
