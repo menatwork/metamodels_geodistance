@@ -14,7 +14,7 @@
  * @subpackage AttributeGeoDistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0
+ * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
