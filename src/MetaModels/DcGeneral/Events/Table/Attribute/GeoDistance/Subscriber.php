@@ -160,7 +160,7 @@ class Subscriber extends BaseSubscriber
         $arrReturn  = [];
         foreach (\array_keys($arrClasses) as $name) {
             $arrReturn[$name] = (isset($GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]))
-                ? $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['perimetersearch'][$name]
+                ? $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]
                 : $name;
         }
 

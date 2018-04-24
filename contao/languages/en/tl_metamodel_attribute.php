@@ -77,3 +77,9 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']      = 'Data Settin
  */
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['single'] = 'Single Mode - One attribute';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['multi']  = 'Multi Mode - Two attributes';
+
+/**
+ * Lookup names
+ */
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['google_maps']      = 'GoogleMaps Lookup';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['open_street_maps'] = 'OpenStreetMap';
