@@ -71,6 +71,7 @@ if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
         'sql'       => 'text NULL',
         'eval'      => [
             'tl_class'     => 'clr',
+            'helpwizard'   => true,
             'columnFields' => [
                 'lookupservice' => [
                     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
@@ -83,8 +84,17 @@ if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
                         'style'              => 'width:250px',
                     ]
                 ],
+                'apiToken' =>[
+                    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token'],
+                    'exclude'   => true,
+                    'inputType' => 'text',
+                    'eval'      => [
+                        'tl_class' => 'w50'
+                    ]
+                ]
             ],
-        ]
+        ],
+        'explanation' => 'attribute_lookupservice',
     ];
 }
 

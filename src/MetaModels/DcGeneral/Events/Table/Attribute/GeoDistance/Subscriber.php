@@ -21,6 +21,7 @@
 
 namespace MetaModels\DcGeneral\Events\Table\Attribute\GeoDistance;
 
+use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelId;
 use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
@@ -152,6 +153,7 @@ class Subscriber extends BaseSubscriber
         // Check the context.
         $allowedProperties = ['lookupservice'];
         if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
+            || 'lookupservice' !== $event->getSubPropertyName()
         ) {
             return;
         }

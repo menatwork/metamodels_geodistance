@@ -52,6 +52,10 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']  = [
     'LookUp Services',
     'Here you can choose a look up service for resolving adress data.'
 ];
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']  = [
+    'Api token',
+    'Here you can add a the api token.'
+];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode']    = [
     'Coutrymode',
     'Here you can choose how the language will used.'
