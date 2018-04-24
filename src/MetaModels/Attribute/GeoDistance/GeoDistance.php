@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_alias.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,13 +13,16 @@
  * @package    MetaModels
  * @subpackage AttributeGeoDistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\Attribute\GeoDistance;
 
+use Contao\Database;
+use Contao\Input;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Helper\Perimetersearch\LookUp\Provider\Container;
@@ -39,12 +42,12 @@ class GeoDistance extends BaseComplex
      *
      * @var array
      */
-    protected static $data = array();
+    protected static $data = [];
 
     /**
      * Retrieve the database.
      *
-     * @return \Contao\Database
+     * @return Database
      */
     private function getDataBase()
     {
@@ -67,7 +70,6 @@ class GeoDistance extends BaseComplex
         // Get some settings.
         $objMetaModel = $this->getMetaModel();
         $getGeo       = $this->get('get_geo');
-        $getLand      = $this->get('get_land');
         $service      = $this->get('lookupservice');
 
         // Check if we have a get param.
@@ -76,11 +78,11 @@ class GeoDistance extends BaseComplex
         }
 
         // Get the params.
-        $geo  = \Input::get($getGeo);
-        $land = (\Input::get($getLand)) ?: '';
+        $geo  = Input::get($getGeo);
+        $land = $this->getCountryInformation();
 
         // Check if we have some geo params.
-        if (empty($geo) && empty($land)) {
+        if (empty($geo) && null === $land) {
             return $idList;
         }
 
@@ -146,14 +148,14 @@ class GeoDistance extends BaseComplex
             ORDER BY item_dist',
             $lat,
             $lng,
-            implode(', ', $idList)
+            \implode(', ', $idList)
         );
 
-        $objResult = \Database::getInstance()
-                              ->prepare($subSQL)
-                              ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
+        $objResult = $this->getDataBase()
+                            ->prepare($subSQL)
+                            ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
-        $newIdList = array();
+        $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
             $id              = $item['item_id'];
             $distance        = $item['item_dist'];
@@ -161,9 +163,9 @@ class GeoDistance extends BaseComplex
             self::$data[$id] = $distance;
         }
 
-        $diff = array_diff($idList, $newIdList);
+        $diff = \array_diff($idList, $newIdList);
 
-        return array_merge($newIdList, $diff);
+        return \array_merge($newIdList, $diff);
     }
 
     /**
@@ -185,7 +187,7 @@ class GeoDistance extends BaseComplex
         $lat     = $container->getLatitude();
         $lng     = $container->getLongitude();
         $intDist = $container->getDistance();
-        $subSQL  = sprintf(
+        $subSQL  = \sprintf(
             'SELECT
                 id,
                 round
@@ -210,15 +212,15 @@ class GeoDistance extends BaseComplex
             $lng,
             $latAttribute->getColName(),
             $longAttribute->getColName(),
-            implode(', ', $idList),
+            \implode(', ', $idList),
             $this->getMetaModel()->getTableName()
         );
 
-        $objResult = \Database::getInstance()
-                              ->prepare($subSQL)
-                              ->execute($intDist);
+        $objResult = $this->getDataBase()
+                            ->prepare($subSQL)
+                            ->execute($intDist);
 
-        $newIdList = array();
+        $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
             $id              = $item['id'];
             $distance        = $item['item_dist'];
@@ -226,9 +228,9 @@ class GeoDistance extends BaseComplex
             self::$data[$id] = $distance;
         }
 
-        $diff = array_diff($idList, $newIdList);
+        $diff = \array_diff($idList, $newIdList);
 
-        return array_merge($newIdList, $diff);
+        return \array_merge($newIdList, $diff);
     }
 
     /**
@@ -243,8 +245,8 @@ class GeoDistance extends BaseComplex
     protected function lookupGeo($strAddress, $strCountry)
     {
         // Trim the data. Better!
-        $strAddress = trim($strAddress);
-        $strCountry = trim($strCountry);
+        $strAddress = \trim($strAddress);
+        $strCountry = \trim($strCountry);
 
         // First check cache.
         $objCacheResult = $this->getFromCache($strAddress, $strCountry);
@@ -253,7 +255,7 @@ class GeoDistance extends BaseComplex
         }
 
         // If there is no data from the cache ask google.
-        $arrLookupServices = deserialize($this->get('lookupservice'), true);
+        $arrLookupServices = \deserialize($this->get('lookupservice'), true);
         if (!count($arrLookupServices)) {
             return false;
         }
@@ -265,7 +267,15 @@ class GeoDistance extends BaseComplex
                 // Call the main function.
                 if ($objCallbackClass != null) {
                     /** @var Container $objResult */
-                    $objResult = $objCallbackClass->getCoordinates(null, null, null, $strCountry, $strAddress);
+                    $objResult = $objCallbackClass
+                        ->getCoordinates(
+                            null,
+                            null,
+                            null,
+                            $strCountry,
+                            $strAddress,
+                            $arrSettings['apiToken'] ?: null
+                        );
 
                     // Check if we have a result.
                     if (!$objResult->hasError()) {
@@ -360,29 +370,31 @@ class GeoDistance extends BaseComplex
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
-            array(
+            [
                 'mandatory',
                 'filterable',
                 'searchable',
                 'get_geo',
-                'get_land',
+                'countrymode',
+                'country_preset',
+                'country_get',
                 'lookupservice',
                 'datamode',
                 'single_attr_id',
                 'first_attr_id',
                 'second_attr_id'
-            )
+            ]
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -420,7 +432,7 @@ class GeoDistance extends BaseComplex
      */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -433,7 +445,7 @@ class GeoDistance extends BaseComplex
      */
     public function getDataFor($arrIds)
     {
-        $return = array();
+        $return = [];
         foreach ($arrIds as $id) {
             if (isset(self::$data[$id])) {
                 $return[$id] = self::$data[$id];
@@ -455,5 +467,28 @@ class GeoDistance extends BaseComplex
     public function unsetDataFor($arrIds)
     {
         // No-op.
+    }
+
+    /**
+     * Try to get a valid country information.
+     *
+     * @return string|null The country short tag (2-letters) or null.
+     */
+    private function getCountryInformation()
+    {
+        // Get the country for the lookup.
+        $strCountry = null;
+
+        if ($this->get('countrymode') === 'get' && $this->get('country_get')) {
+            $getValue = Input::get($this->get('country_get')) ?: Input::post($this->get('country_get'));
+            $getValue = \trim($getValue);
+            if (!empty($getValue)) {
+                $strCountry = $getValue;
+            }
+        } elseif ($this->get('countrymode') === 'preset') {
+            $strCountry = $this->get('country_preset');
+        }
+
+        return $strCountry;
     }
 }

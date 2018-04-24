@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of MetaModels/attribute_alias.
+ * This file is part of MetaModels/core.
  *
  * (c) 2012-2018 The MetaModels team.
  *
@@ -12,22 +12,13 @@
  *
  * @package    MetaModels
  * @subpackage AttributeGeoDistance
- * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['numeric'] = [
-    'presentation' => [
-        'tl_class',
-    ],
-    'functions'    => [
-        'mandatory',
-    ],
-    'overview'     => [
-        'filterable',
-        'searchable',
-    ],
-];
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][0][0] = 'GoogleMaps Lookup';
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][0][1] =
+    'If you use the Google Maps lookup service, please add the API token to ensure full usage.<br>
+    <strong><a href="https://developers.google.com/maps/documentation/javascript/usage">Google Maps API</a></strong>';

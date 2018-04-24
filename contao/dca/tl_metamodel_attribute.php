@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_alias.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,105 +13,158 @@
  * @package    MetaModels
  * @subpackage AttributeGeoDistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 /**
  * Table tl_metamodel_attribute
  */
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['geodistance extends _simpleattribute_'] = array
-(
-    '+parameter' => array('get_geo', 'get_land'),
-    '+data' => array('datamode', 'lookupservice'),
-);
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['geodistance extends _simpleattribute_'] = [
+    '+parameter' => ['get_geo', 'countrymode'],
+    '+data'      => ['datamode'],
+];
+// Add the lookup service if the filter perimeter search is available.
+if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
+    $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['geodistance extends _simpleattribute_']['+data'][] =
+        'lookupservice';
+}
 
 // Subpalettes.
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['single'] =
-    array('single_attr_id');
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['multi']  =
-    array(
-        'first_attr_id',
-        'second_attr_id'
-    );
+    ['single_attr_id'];
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['multi'] = [
+    'first_attr_id',
+    'second_attr_id'
+];
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['preset']  =
+    ['country_preset'];
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['get']     =
+    ['country_get'];
 
 // Fields.
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo'],
     'exclude'   => true,
     'inputType' => 'text',
-    'eval'      => array
-    (
-        'tl_class' => 'w50'
-    ),
-);
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
+        'tl_class' => 'w50',
+        'mandatory'          => true
+    ],
+];
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['countrymode'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode'],
+    'exclude'   => true,
+    'inputType' => 'select',
+    'options'   => ['none', 'preset', 'get'],
+    'reference' => $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options'],
+    'eval'      => [
+        'tl_class'       => 'clr w50 w50x',
+        'doNotSaveEmpty' => true,
+        'alwaysSave'     => true,
+        'submitOnChange' => true,
+        'mandatory'      => true,
+    ],
+    'sql'      => 'varchar(255) NOT NULL default \'\''
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['country_preset'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_preset'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => [
+        'tl_class'  => 'w50 w50x',
+        'mandatory' => true
+    ],
+    'sql'      => 'text NULL'
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['country_get'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['country_get'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => [
+        'tl_class'  => 'w50 w50x',
+        'mandatory' => true
+    ],
+    'sql'      => 'text NULL'
+];
+/*$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land'],
     'exclude'   => true,
     'inputType' => 'text',
-    'eval'      => array
-    (
-        'tl_class' => 'w50'
-    ),
-);
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
+        'tl_class' => 'w50 w50x',
+        'mandatory'          => true
+    ],
+];*/
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['lookupservice'] = array
-(
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
-    'exclude'   => true,
-    'inputType' => 'multiColumnWizard',
-    'eval'      => array
-    (
-        'tl_class'     => 'clr',
-        'columnFields' => array
-        (
-            'lookupservice' => array
-            (
-                'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
-                'exclude'   => true,
-                'inputType' => 'select',
-                'eval'      => array
-                (
-                    'includeBlankOption' => true,
-                    'mandatory'          => true,
-                    'chosen'             => true,
-                    'style'              => 'width:250px',
-                )
-            ),
-        ),
-    )
-);
+// Add the lookup service if the filter perimeter search is available.
+if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
+    $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['lookupservice'] = [
+        'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
+        'exclude'   => true,
+        'inputType' => 'multiColumnWizard',
+        'sql'       => 'text NULL',
+        'eval'      => [
+            'tl_class'     => 'clr',
+            'helpwizard'   => true,
+            'columnFields' => [
+                'lookupservice' => [
+                    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
+                    'exclude'   => true,
+                    'inputType' => 'select',
+                    'eval'      => [
+                        'includeBlankOption' => true,
+                        'mandatory'          => true,
+                        'chosen'             => true,
+                        'style'              => 'width:250px',
+                    ]
+                ],
+                'apiToken' =>[
+                    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token'],
+                    'exclude'   => true,
+                    'inputType' => 'text',
+                    'eval'      => [
+                        'tl_class' => 'w50'
+                    ]
+                ]
+            ],
+        ],
+        'explanation' => 'attribute_lookupservice',
+    ];
+}
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['datamode'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['datamode'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode'],
     'exclude'   => true,
     'inputType' => 'select',
-    'options'   => array('single', 'multi'),
+    'options'   => ['single', 'multi'],
     'reference' => $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options'],
-    'eval'      => array
-    (
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
         'doNotSaveEmpty'     => true,
         'alwaysSave'         => true,
         'submitOnChange'     => true,
         'includeBlankOption' => true,
         'mandatory'          => true,
         'tl_class'           => 'clr',
-    )
-);
+    ]
+];
 
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['single_attr_id'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['single_attr_id'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['single_attr_id'],
     'exclude'   => true,
     'inputType' => 'select',
-    'eval'      => array
-    (
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
         'doNotSaveEmpty'     => true,
         'alwaysSave'         => true,
         'submitOnChange'     => true,
@@ -119,16 +172,15 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['single_attr_id'] = array
         'mandatory'          => true,
         'tl_class'           => 'w50',
         'chosen'             => true
-    )
-);
+    ]
+];
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['first_attr_id'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['first_attr_id'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['first_attr_id'],
     'exclude'   => true,
     'inputType' => 'select',
-    'eval'      => array
-    (
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
         'doNotSaveEmpty'     => true,
         'alwaysSave'         => true,
         'submitOnChange'     => true,
@@ -136,16 +188,15 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['first_attr_id'] = array
         'mandatory'          => true,
         'tl_class'           => 'w50',
         'chosen'             => true
-    )
-);
+    ]
+];
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['second_attr_id'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['second_attr_id'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['second_attr_id'],
     'exclude'   => true,
     'inputType' => 'select',
-    'eval'      => array
-    (
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
         'doNotSaveEmpty'     => true,
         'alwaysSave'         => true,
         'submitOnChange'     => true,
@@ -153,6 +204,5 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['second_attr_id'] = array
         'mandatory'          => true,
         'tl_class'           => 'w50',
         'chosen'             => true
-    )
-);
-
+    ]
+];

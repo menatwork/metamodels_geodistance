@@ -19,15 +19,7 @@
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['numeric'] = [
-    'presentation' => [
-        'tl_class',
-    ],
-    'functions'    => [
-        'mandatory',
-    ],
-    'overview'     => [
-        'filterable',
-        'searchable',
-    ],
-];
+// Let our handler handle the necessary steps.
+use MetaModels\Attribute\GeoDistance\Helper\UpgradeHandler;
+
+UpgradeHandler::perform();
