@@ -19,4 +19,6 @@
  */
 
 // Let our handler handle the necessary steps.
-MetaModels\Helper\UpgradeHandler::perform();
+use MetaModels\Attribute\GeoDistance\Helper\UpgradeHandler;
+
+UpgradeHandler::perform();

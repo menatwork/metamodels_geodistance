@@ -70,7 +70,6 @@ class GeoDistance extends BaseComplex
         // Get some settings.
         $objMetaModel = $this->getMetaModel();
         $getGeo       = $this->get('get_geo');
-        $getLand      = $this->get('get_land');
         $service      = $this->get('lookupservice');
 
         // Check if we have a get param.
@@ -80,10 +79,10 @@ class GeoDistance extends BaseComplex
 
         // Get the params.
         $geo  = Input::get($getGeo);
-        $land = (Input::get($getLand)) ?: '';
+        $land = $this->getCountryInformation();
 
         // Check if we have some geo params.
-        if (empty($geo) && empty($land)) {
+        if (empty($geo) && null === $land) {
             return $idList;
         }
 
@@ -378,7 +377,9 @@ class GeoDistance extends BaseComplex
                 'filterable',
                 'searchable',
                 'get_geo',
-                'get_land',
+                'countrymode',
+                'country_preset',
+                'country_get',
                 'lookupservice',
                 'datamode',
                 'single_attr_id',
@@ -466,5 +467,28 @@ class GeoDistance extends BaseComplex
     public function unsetDataFor($arrIds)
     {
         // No-op.
+    }
+
+    /**
+     * Try to get a valid country information.
+     *
+     * @return string|null The country short tag (2-letters) or null.
+     */
+    private function getCountryInformation()
+    {
+        // Get the country for the lookup.
+        $strCountry = null;
+
+        if ($this->get('countrymode') === 'get' && $this->get('country_get')) {
+            $getValue = Input::get($this->get('country_get')) ?: Input::post($this->get('country_get'));
+            $getValue = \trim($getValue);
+            if (!empty($getValue)) {
+                $strCountry = $getValue;
+            }
+        } elseif ($this->get('countrymode') === 'preset') {
+            $strCountry = $this->get('country_preset');
+        }
+
+        return $strCountry;
     }
 }

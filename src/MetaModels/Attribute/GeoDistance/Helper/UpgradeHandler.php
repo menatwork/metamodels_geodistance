@@ -14,7 +14,7 @@
  * @subpackage AttributeGeoDistance
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0
+ * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -29,22 +29,36 @@ use MetaModels\Helper\TableManipulation;
  */
 class UpgradeHandler
 {
+    /**
+     * Update the database table "tl_metamodel_attribute".
+     * - Create the new column "countrymode".
+     * - Create the new column "country_get".
+     * - If exists entries in the old field "get_land",
+     *   then switch the "countrymode" to the option "get"
+     *   and store the data from the old field to the new field "country_get".
+     *
+     * @return void
+     */
     private static function updateCountryMode()
     {
         $database = Database::getInstance();
 
-        if ($database->tableExists('tl_metamodel_attribute')) {
+        if (!$database->tableExists('tl_metamodel_attribute')) {
             return;
         }
-
-        TableManipulation::dropColumn('tl_metamodel_attribute', 'countrymode');
-        TableManipulation::dropColumn('tl_metamodel_attribute', 'country_get');
 
         $fields = $database->getFieldNames('tl_metamodel_attribute');
         if (\in_array('countrymode', $fields)
             || \in_array('country_get', $fields)
-            || !\in_array('get_geo', $fields)
+            || !\in_array('get_land', $fields)
         ) {
+            return;
+        }
+
+        $result = $database->prepare('SELECT id, get_land FROM tl_metamodel_attribute WHERE get_land!=""')
+            ->execute();
+
+        if (!$result->count()) {
             return;
         }
 
@@ -59,21 +73,15 @@ class UpgradeHandler
             'text NULL'
         );
 
-        $result = $database->prepare('SELECT id, get_geo FROM tl_metamodel_attribute WHERE get_geo!=""')
-                            ->execute();
-
-        if (!$result->count()) {
-            TableManipulation::dropColumn('tl_metamodel_attribute', 'get_geo');
-
-            return;
-        }
-
         while ($result->next()) {
             $data = [
-
+                'countrymode' => 'get',
+                'country_get' => $result->get_land
             ];
 
-            echo "";
+            $database->prepare('UPDATE tl_metamodel_attribute %s WHERE id=?')
+                ->set($data)
+                ->execute($result->id);
         }
     }
 
@@ -84,7 +92,6 @@ class UpgradeHandler
      */
     public static function perform()
     {
-        return;
         self::updateCountryMode();
     }
 }

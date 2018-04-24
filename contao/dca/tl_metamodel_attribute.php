@@ -43,16 +43,16 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode'
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['preset']  =
     ['country_preset'];
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['get']     =
-    ['get_land'];
+    ['country_get'];
 
 // Fields.
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land'],
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo'],
     'exclude'   => true,
     'inputType' => 'text',
     'sql'       => 'varchar(255) NOT NULL default \'\'',
     'eval'      => [
-        'tl_class' => 'w50 w50x',
+        'tl_class' => 'w50',
         'mandatory'          => true
     ],
 ];
@@ -84,16 +84,26 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['country_preset'] = [
     'sql'      => 'text NULL'
 ];
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo'],
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['country_get'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['country_get'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => [
+        'tl_class'  => 'w50 w50x',
+        'mandatory' => true
+    ],
+    'sql'      => 'text NULL'
+];
+/*$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land'],
     'exclude'   => true,
     'inputType' => 'text',
     'sql'       => 'varchar(255) NOT NULL default \'\'',
     'eval'      => [
-        'tl_class' => 'w50',
+        'tl_class' => 'w50 w50x',
         'mandatory'          => true
     ],
-];
+];*/
 
 // Add the lookup service if the filter perimeter search is available.
 if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {

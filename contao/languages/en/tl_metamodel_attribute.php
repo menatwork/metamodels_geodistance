@@ -57,15 +57,15 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']  = [
     'Here you can add a the api token.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode']    = [
-    'Coutrymode',
+    'Countrymode',
     'Here you can choose how the language will used.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_preset'] = [
-    'Coutry preset',
+    'Country preset',
     'Here you can add a preset for the language.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']    = [
-    'Coutry GET Parameter',
+    'Country GET Parameter',
     'Here you can add a get parameter.'
 ];
 
@@ -78,8 +78,8 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']      = 'Data Settin
 /**
  * Options
  */
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['single'] = 'Single Mode - One attribute';
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['multi']  = 'Multi Mode - Two attributes';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['single']     = 'Single Mode - One attribute';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['multi']      = 'Multi Mode - Two attributes';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['none']    = 'None';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['preset']  = 'Preset by system';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['get']     = 'Use GET-Param';
