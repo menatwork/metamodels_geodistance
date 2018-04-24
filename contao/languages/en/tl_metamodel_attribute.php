@@ -80,6 +80,9 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']      = 'Data Settin
  */
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['single'] = 'Single Mode - One attribute';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['multi']  = 'Multi Mode - Two attributes';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['none']    = 'None';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['preset']  = 'Preset by system';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['get']     = 'Use GET-Param';
 
 /**
  * Lookup names

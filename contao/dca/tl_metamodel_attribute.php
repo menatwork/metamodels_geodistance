@@ -24,7 +24,7 @@
  * Table tl_metamodel_attribute
  */
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['geodistance extends _simpleattribute_'] = [
-    '+parameter' => ['get_geo', 'get_land'],
+    '+parameter' => ['get_geo', 'countrymode'],
     '+data'      => ['datamode'],
 ];
 // Add the lookup service if the filter perimeter search is available.
@@ -40,8 +40,50 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode'
     'first_attr_id',
     'second_attr_id'
 ];
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['preset']  =
+    ['country_preset'];
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['get']     =
+    ['get_land'];
 
 // Fields.
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'sql'       => 'varchar(255) NOT NULL default \'\'',
+    'eval'      => [
+        'tl_class' => 'w50 w50x',
+        'mandatory'          => true
+    ],
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['countrymode'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode'],
+    'exclude'   => true,
+    'inputType' => 'select',
+    'options'   => ['none', 'preset', 'get'],
+    'reference' => $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options'],
+    'eval'      => [
+        'tl_class'       => 'clr w50 w50x',
+        'doNotSaveEmpty' => true,
+        'alwaysSave'     => true,
+        'submitOnChange' => true,
+        'mandatory'      => true,
+    ],
+    'sql'      => 'varchar(255) NOT NULL default \'\''
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['country_preset'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_preset'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => [
+        'tl_class'  => 'w50 w50x',
+        'mandatory' => true
+    ],
+    'sql'      => 'text NULL'
+];
+
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo'],
     'exclude'   => true,
@@ -50,16 +92,6 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
     'eval'      => [
         'tl_class' => 'w50',
         'mandatory'          => true
-    ],
-];
-
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land'],
-    'exclude'   => true,
-    'inputType' => 'text',
-    'sql'       => 'varchar(255) NOT NULL default \'\'',
-    'eval'      => [
-        'tl_class' => 'w50'
     ],
 ];
 

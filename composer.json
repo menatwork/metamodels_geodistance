@@ -47,7 +47,10 @@
     "contao": {
       "sources": {
         "contao": "system/modules/metamodelsattribute_geodistance"
-      }
+      },
+     "runonce": [
+        "runonce/runonce.php"
+     ]
     },
     "branch-alias": {
       "dev-master": "2.0.x-dev",
