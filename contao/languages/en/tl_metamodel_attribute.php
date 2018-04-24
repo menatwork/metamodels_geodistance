@@ -68,7 +68,6 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']    = [
 /**
  * Legends
  */
-
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['parameter_legend'] = 'Parameter';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']      = 'Data Settings';
 

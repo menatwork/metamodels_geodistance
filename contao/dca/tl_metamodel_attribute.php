@@ -25,8 +25,13 @@
  */
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['geodistance extends _simpleattribute_'] = [
     '+parameter' => ['get_geo', 'get_land'],
-    '+data'      => ['datamode', 'lookupservice'],
+    '+data'      => ['datamode'],
 ];
+// Add the lookup service if the filter perimeter search is available.
+if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
+    $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['geodistance extends _simpleattribute_']['+data'][] =
+        'lookupservice';
+}
 
 // Subpalettes.
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['single'] =
@@ -57,28 +62,31 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
     ],
 ];
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['lookupservice'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
-    'exclude'   => true,
-    'inputType' => 'multiColumnWizard',
-    'sql'       => 'text NULL',
-    'eval'      => [
-        'tl_class'     => 'clr',
-        'columnFields' => [
-            'lookupservice' => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
-                'exclude'   => true,
-                'inputType' => 'select',
-                'eval'      => [
-                    'includeBlankOption' => true,
-                    'mandatory'          => true,
-                    'chosen'             => true,
-                    'style'              => 'width:250px',
-                ]
+// Add the lookup service if the filter perimeter search is available.
+if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
+    $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['lookupservice'] = [
+        'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
+        'exclude'   => true,
+        'inputType' => 'multiColumnWizard',
+        'sql'       => 'text NULL',
+        'eval'      => [
+            'tl_class'     => 'clr',
+            'columnFields' => [
+                'lookupservice' => [
+                    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice'],
+                    'exclude'   => true,
+                    'inputType' => 'select',
+                    'eval'      => [
+                        'includeBlankOption' => true,
+                        'mandatory'          => true,
+                        'chosen'             => true,
+                        'style'              => 'width:250px',
+                    ]
+                ],
             ],
-        ],
-    ]
-];
+        ]
+    ];
+}
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['datamode'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode'],
@@ -145,4 +153,3 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['second_attr_id'] = [
         'chosen'             => true
     ]
 ];
-
