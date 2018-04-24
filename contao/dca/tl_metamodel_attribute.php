@@ -48,7 +48,8 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
     'inputType' => 'text',
     'sql'       => 'varchar(255) NOT NULL default \'\'',
     'eval'      => [
-        'tl_class' => 'w50'
+        'tl_class' => 'w50',
+        'mandatory'          => true
     ],
 ];
 
