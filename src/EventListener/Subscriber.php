@@ -21,7 +21,6 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
-use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelId;
 use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
@@ -32,6 +31,8 @@ use MetaModels\DcGeneral\Events\BaseSubscriber;
  */
 class Subscriber extends BaseSubscriber
 {
+    use BaseTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -48,29 +49,6 @@ class Subscriber extends BaseSubscriber
             );
     }
 
-    /**
-     * Check if the current context is valid.
-     *
-     * @param GetPropertyOptionsEvent|GetOptionsEvent $event              The event.
-     *
-     * @param string                                  $dataDefinitionName The allowed name of the data definition.
-     *
-     * @param array                                   $properties         A list of allowed properties.
-     *
-     * @return bool
-     */
-    protected function isAllowedProperty($event, $dataDefinitionName, $properties)
-    {
-        if ($event->getEnvironment()->getDataDefinition()->getName() !== $dataDefinitionName) {
-            return false;
-        }
-
-        if (!\in_array($event->getPropertyName(), $properties)) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * Prepares a option list with alias => name connection for all attributes.
@@ -85,7 +63,7 @@ class Subscriber extends BaseSubscriber
     {
         // Check the context.
         $allowedProperties = ['first_attr_id', 'second_attr_id', 'single_attr_id'];
-        if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
+        if (!BaseTrait::isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
         ) {
             return;
         }
@@ -152,7 +130,7 @@ class Subscriber extends BaseSubscriber
     {
         // Check the context.
         $allowedProperties = ['lookupservice'];
-        if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
+        if (!BaseTrait::isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
             || 'lookupservice' !== $event->getSubPropertyName()
         ) {
             return;
