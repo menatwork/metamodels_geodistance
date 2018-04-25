@@ -11,7 +11,7 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
- * @subpackage AttributeGeoDistance
+ * @subpackage AttributeGeoDistanceBundle
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\DcGeneral\Events\Table\Attribute\GeoDistance;
+namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;

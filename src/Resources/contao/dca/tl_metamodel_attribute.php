@@ -11,7 +11,7 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
- * @subpackage AttributeGeoDistance
+ * @subpackage AttributeGeoDistanceBundle
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>

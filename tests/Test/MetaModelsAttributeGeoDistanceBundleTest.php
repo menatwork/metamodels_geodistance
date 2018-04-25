@@ -19,7 +19,22 @@
  * @filesource
  */
 
-// Let our handler handle the necessary steps.
-use MetaModels\AttributeGeoDistanceBundle\Helper\UpgradeHandler;
+namespace MetaModels\AttributeGeoDistanceBundle\Test;
 
-UpgradeHandler::perform();
+use MetaModels\AttributeGeoDistanceBundle\MetaModelsAttributeGeoDistanceBundle;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class MetaModelsAttributeGeoDistanceBundleTest
+ *
+ * @covers  \MetaModels\AttributeGeoDistanceBundle\MetaModelsAttributeGeoDistanceBundle
+ */
+class MetaModelsAttributeGeoDistanceBundleTest extends TestCase
+{
+    public function testCanBeInstantiated()
+    {
+        $bundle = new MetaModelsAttributeGeoDistanceBundle();
+
+        $this->assertInstanceOf(MetaModelsAttributeGeoDistanceBundle::class, $bundle);
+    }
+}

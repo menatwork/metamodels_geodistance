@@ -41,8 +41,13 @@
    "metamodels/filter_perimetersearch": "^2.1@dev"
  },
  "autoload": {
-   "psr-0": {
-     "MetaModels\\": "src"
+   "psr-4": {
+     "MetaModels\\AttributeGeoDistanceBundle\\": "src"
+   }
+ },
+ "autoload-dev": {
+   "psr-4": {
+     "MetaModels\\AttributeGeoDistanceBundle\\Test\\": "tests/Test"
    }
  },
  "extra": {

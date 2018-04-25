@@ -19,7 +19,13 @@
  * @filesource
  */
 
-// Let our handler handle the necessary steps.
-use MetaModels\AttributeGeoDistanceBundle\Helper\UpgradeHandler;
+namespace MetaModels\AttributeGeoDistanceBundle;
 
-UpgradeHandler::perform();
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+/**
+ * This is the bundle class.
+ */
+class MetaModelsAttributeGeoDistanceBundle extends Bundle
+{
+}

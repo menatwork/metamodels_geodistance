@@ -11,7 +11,7 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
- * @subpackage AttributeGeoDistance
+ * @subpackage AttributeGeoDistanceBundle
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
@@ -20,8 +20,8 @@
  */
 
 use MetaModels\Attribute\Events\CreateAttributeFactoryEvent;
-use MetaModels\Attribute\GeoDistance\AttributeTypeFactory;
-use MetaModels\DcGeneral\Events\Table\Attribute\GeoDistance\Subscriber;
+use MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeGeoDistanceBundle\EventListener\Subscriber;
 use MetaModels\Events\MetaModelsBootEvent;
 use MetaModels\MetaModelsEvents;
 
