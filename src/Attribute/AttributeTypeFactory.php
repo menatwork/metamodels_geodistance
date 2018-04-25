@@ -38,7 +38,7 @@ class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
         parent::__construct($connection, $tableManipulator);
 
         $this->typeName  = 'geodistance';
-        $this->typeIcon  = 'system/modules/metamodelsattribute_geodistance/html/numeric.png';
+        $this->typeIcon  = 'bundles/metamodelsattributegeodistance/image/numeric.png';
         $this->typeClass = GeoDistance::class;
     }
 }
