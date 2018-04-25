@@ -23,32 +23,41 @@ namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelId;
-use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
-use MetaModels\DcGeneral\Events\BaseSubscriber;
+use MetaModels\Factory;
+use MetaModels\Filter\Setting\FilterSettingFactory;
 
 /**
- * Handle events for tl_metamodel_attribute.alias_fields.attr_id.
+ * This class provides the attribute options and encodes and decodes the attribute id.
  */
-class Subscriber extends BaseSubscriber
+class AttributeListener
 {
     use BaseTrait;
 
     /**
-     * {@inheritdoc}
+     * The metamodels factory.
+     *
+     * @var Factory
      */
-    protected function registerEventsInDispatcher()
-    {
-        $this
-            ->addListener(
-                GetPropertyOptionsEvent::NAME,
-                [$this, 'getAttributeIdOptions']
-            )
-            ->addListener(
-                GetOptionsEvent::NAME,
-                [$this, 'getResolverClass']
-            );
-    }
+    private $factory;
 
+    /**
+     * The filter factory.
+     *
+     * @var FilterSettingFactory
+     */
+    private $filterFactory;
+
+    /**
+     * AttributeListener constructor.
+     *
+     * @param Factory              $factory       The factory.
+     * @param FilterSettingFactory $filterFactory The filter factory.
+     */
+    public function __construct(Factory $factory, FilterSettingFactory $filterFactory)
+    {
+        $this->factory       = $factory;
+        $this->filterFactory = $filterFactory;
+    }
 
     /**
      * Prepares a option list with alias => name connection for all attributes.
@@ -63,7 +72,7 @@ class Subscriber extends BaseSubscriber
     {
         // Check the context.
         $allowedProperties = ['first_attr_id', 'second_attr_id', 'single_attr_id'];
-        if (!BaseTrait::isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
+        if ($this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
         ) {
             return;
         }
@@ -78,18 +87,14 @@ class Subscriber extends BaseSubscriber
             )->getId();
         }
 
-        $factory       = $this->getServiceContainer()->getFactory();
-        $metaModelName = $factory->translateIdToMetaModelName($metaModelId);
-        $metaModel     = $factory->getMetaModel($metaModelName);
+        $metaModelName = $this->factory->translateIdToMetaModelName($metaModelId);
+        $metaModel     = $this->factory->getMetaModel($metaModelName);
 
         if (!$metaModel) {
             return;
         }
 
-        $typeFactory = $this
-            ->getServiceContainer()
-            ->getFilterFactory()
-            ->getTypeFactory($model->getProperty('type'));
+        $typeFactory = $this->filterFactory->getTypeFactory($model->getProperty('type'));
 
         $typeFilter = [];
         if ($typeFactory) {
@@ -114,36 +119,5 @@ class Subscriber extends BaseSubscriber
             $result[$strSelectVal] = $attribute->getName() . ' [' . $typeName . ']';
         }
         $event->setOptions($result);
-    }
-
-    /**
-     * Get a list with all supported resolver class for a geo lookup.
-     *
-     * @param GetOptionsEvent $event The event.
-     *
-     * @return void
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     */
-    public function getResolverClass(GetOptionsEvent $event)
-    {
-        // Check the context.
-        $allowedProperties = ['lookupservice'];
-        if (!BaseTrait::isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
-            || 'lookupservice' !== $event->getSubPropertyName()
-        ) {
-            return;
-        }
-
-        $arrClasses = (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'];
-        $arrReturn  = [];
-        foreach (\array_keys($arrClasses) as $name) {
-            $arrReturn[$name] = (isset($GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]))
-                ? $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]
-                : $name;
-        }
-
-        $event->setOptions($arrReturn);
     }
 }

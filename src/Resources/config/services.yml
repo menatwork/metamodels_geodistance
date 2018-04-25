@@ -6,3 +6,22 @@ services:
             - "@metamodels.table_manipulator"
         tags:
           - { name: metamodels.attribute_factory }
+
+    metamdodels.event_listener.attribute_listener:
+        class: MetaModels\AttributeGeoDistanceBundle\EventListener\AttributeListener
+        public: true
+        arguments:
+            - "@metamodels.factory"
+            - "@metamodels.filter_setting_factory"
+        tags:
+            - name: kernel.event_listener
+              event: dc-general.view.contao2backend.get-property-options
+              method: getAttributeIdOptions
+
+    metamdodels.event_listener.look_up_service_listener:
+        class: MetaModels\AttributeGeoDistanceBundle\EventListener\LookUpServiceListener
+        public: true
+        tags:
+            - name: kernel.event_listener
+              event: men-at-work.multi-column-wizard.get-options
+              method: getResolverClass
