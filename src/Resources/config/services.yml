@@ -1,5 +1,5 @@
 services:
-    metamodels.attribute_text.factory:
+    metamodels.attribute_geodistance.factory:
         class: MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory
         arguments:
             - "@database_connection"
@@ -7,7 +7,7 @@ services:
         tags:
           - { name: metamodels.attribute_factory }
 
-    metamdodels.event_listener.attribute_listener:
+    metamdodels.attribute_geodistance.event_listener.attribute_listener:
         class: MetaModels\AttributeGeoDistanceBundle\EventListener\AttributeListener
         public: true
         arguments:
@@ -18,7 +18,7 @@ services:
               event: dc-general.view.contao2backend.get-property-options
               method: getAttributeIdOptions
 
-    metamdodels.event_listener.look_up_service_listener:
+    metamdodels.attribute_geodistance.event_listener.look_up_service_listener:
         class: MetaModels\AttributeGeoDistanceBundle\EventListener\LookUpServiceListener
         public: true
         tags:

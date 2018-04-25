@@ -25,7 +25,7 @@ use Contao\Database;
 use Contao\Input;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\Filter\Helper\Perimetersearch\LookUp\Provider\Container;
+use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
 
 /**
  * This is the MetaModelAttribute class for handling numeric fields.

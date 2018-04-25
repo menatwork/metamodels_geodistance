@@ -72,7 +72,7 @@ class AttributeListener
     {
         // Check the context.
         $allowedProperties = ['first_attr_id', 'second_attr_id', 'single_attr_id'];
-        if ($this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
+        if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
         ) {
             return;
         }
