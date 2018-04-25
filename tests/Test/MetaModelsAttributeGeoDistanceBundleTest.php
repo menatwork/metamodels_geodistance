@@ -21,8 +21,12 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\Test;
 
+use MetaModels\AttributeGeoDistanceBundle\DependencyInjection\MetaModelsAttributeGeoDistanceExtension;
 use MetaModels\AttributeGeoDistanceBundle\MetaModelsAttributeGeoDistanceBundle;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Resource\ComposerResource;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Class MetaModelsAttributeGeoDistanceBundleTest
@@ -36,5 +40,30 @@ class MetaModelsAttributeGeoDistanceBundleTest extends TestCase
         $bundle = new MetaModelsAttributeGeoDistanceBundle();
 
         $this->assertInstanceOf(MetaModelsAttributeGeoDistanceBundle::class, $bundle);
+    }
+
+    public function testReturnsTheContainerExtension()
+    {
+        $extension = (new MetaModelsAttributeGeoDistanceBundle())->getContainerExtension();
+
+        $this->assertInstanceOf(MetaModelsAttributeGeoDistanceExtension::class, $extension);
+    }
+
+    /**
+     * @covers \MetaModels\AttributeGeoDistanceBundle\DependencyInjection\MetaModelsAttributeGeoDistanceExtension::load
+     */
+    public function testLoadExtensionConfiguration()
+    {
+        $extension = (new MetaModelsAttributeGeoDistanceBundle())->getContainerExtension();
+        $container = new ContainerBuilder();
+
+        $extension->load([], $container);
+
+        $this->assertInstanceOf(ComposerResource::class, $container->getResources()[0]);
+        $this->assertInstanceOf(FileResource::class, $container->getResources()[1]);
+        $this->assertSame(
+            \dirname(\dirname(__DIR__)) . '/src/Resources/config/services.yml',
+            $container->getResources()[1]->getResource()
+        );
     }
 }
