@@ -25,15 +25,15 @@
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['geodistance'] = 'Geo Distance';
 
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo']        = [
-    'GET-Parameter for Geo',
-    'Here you can add the GET-Parameter name for the geo lookup.'
+    'GET-Parameter for address',
+    'Here you can add the GET-Parameter name for the address lookup.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land']       = [
     'GET-Parameter for country',
     'Here you can add the GET-Parameter name for the country lookup.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode']       = [
-    'Datamode',
+    'Data mode',
     'Here you can choose if you have one single attribute or two attributes.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['single_attr_id'] = [
@@ -53,8 +53,8 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']  = [
     'Here you can choose a look up service for resolving adress data.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']  = [
-    'Api token',
-    'Here you can add a the api token.'
+    'API token',
+    'Here you can add a the API token.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode']    = [
     'Countrymode',
@@ -65,15 +65,15 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_preset'] = [
     'Here you can add a preset for the language.'
 ];
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']    = [
-    'Country GET Parameter',
-    'Here you can add a get parameter.'
+    'GET-Parameter for country',
+    'Here you can add the GET-Parameter name for the country lookup.'
 ];
 
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['parameter_legend'] = 'Parameter';
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']      = 'Data Settings';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['parameter_legend'] = 'Address parameter';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']      = 'Data settings';
 
 /**
  * Options
