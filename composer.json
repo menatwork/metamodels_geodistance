@@ -9,7 +9,7 @@
     "geo",
     "distance"
   ],
-  "type": "contao-module",
+  "type": "contao-bundle",
   "homepage": "http://now.metamodel.me/",
   "license": "LGPL-3.0-or-later",
   "authors": [
@@ -20,50 +20,50 @@
     }
   ],
  "support": {
-    "email": "mail@metamodel.me",
-    "issues": "https://github.com/MetaModels/attribute_geodistance/issues",
-    "wiki": "http://de.contaowiki.org/MetaModels",
-    "irc": "irc://irc.freenode.org/contao.mm",
-    "source": "https://github.com/MetaModels/attribute_geodistance"
-  },
-  "require": {
-    "php": "^5.6 || ^7.0",
-    "contao/core": "^3.5.5",
-    "contao-community-alliance/composer-plugin": "^2.4",
-    "metamodels/core": "^2.0",
-    "menatwork/contao-multicolumnwizard": "^3.3"
-  },
+   "email": "mail@metamodel.me",
+   "issues": "https://github.com/MetaModels/attribute_geodistance/issues",
+   "wiki": "http://de.contaowiki.org/MetaModels",
+   "irc": "irc://irc.freenode.org/contao.mm",
+   "source": "https://github.com/MetaModels/attribute_geodistance"
+ },
+ "require": {
+   "php": "^5.6 || ^7.0",
+   "contao/core-bundle": "^4.4",
+   "contao-community-alliance/dc-general": "^2.1@dev",
+   "metamodels/core": "^2.1@dev",
+   "menatwork/contao-multicolumnwizard": "^3.3",
+   "symfony/dependency-injection": "^3.3"
+ },
  "require-dev": {
-    "cyberspectrum/contao-toolbox": "^1.0",
-    "phpcq/all-tasks": "^1.2",
-    "metamodels/filter_perimetersearch": "^2.0",
-    "metamodels/base-unit-tests": "^1.0.4"
+   "cyberspectrum/contao-toolbox": "^0.7",
+   "phpcq/all-tasks": "^1.2",
+   "contao/manager-plugin": "^2.1",
+   "metamodels/filter_perimetersearch": "^2.1@dev"
+ },
+ "autoload": {
+   "psr-0": {
+     "MetaModels\\": "src"
+   }
+ },
+ "extra": {
+   "transifex": {
+   "project": "metamodels",
+   "prefix": "attribute_geodistance-",
+   "languages_cto": "contao/languages",
+   "languages_tx": ".tx"
   },
-  "autoload": {
-    "psr-0": {
-      "MetaModels\\": "src"
-    }
-  },
-  "extra": {
-    "contao": {
-      "sources": {
-        "contao": "system/modules/metamodelsattribute_geodistance"
-      },
-      "transifex": {
-        "project": "metamodels",
-        "prefix": "attribute_geodistance-",
-        "languages_cto": "contao/languages",
-        "languages_tx": ".tx"
-      },
-      "runonce": [
-        "runonce/runonce.php"
-      ]
-    },
-    "branch-alias": {
-      "dev-master": "2.0.x-dev",
-      "dev-develop": "2.1.x-dev"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+ "runonce": [
+   "runonce/runonce.php"
+ ],
+ "branch-alias": {
+   "dev-master": "2.0.x-dev",
+   "dev-feature/contao4": "2.1.x-dev"
+   }
+ },
+ "repositories": [
+   {
+     "type": "vcs",
+     "url": "git@gitlab.com:metamodels/core.git"
+   }
+ ]
 }
