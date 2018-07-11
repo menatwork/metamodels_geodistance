@@ -140,7 +140,7 @@ class GeoDistance extends BaseComplex
                 round(
                   sqrt(power(2 * pi() / 360 * (%1$s - latitude) * 6371, 2) 
                   + power(2 * pi() / 360 * (%2$s - longitude) * 6371 
-                  * COS(2 * pi() / 360 * (%1$s + latitude) * 0.5), 2))) AS item_dist
+                  * COS(2 * pi() / 360 * (%1$s + latitude) * 0.5), 2)), 2) AS item_dist
             FROM
                 tl_metamodel_geolocation
             WHERE
@@ -200,7 +200,7 @@ class GeoDistance extends BaseComplex
                       + power(2 * pi() / 360 * (%2$s - CAST(%4$s AS DECIMAL(10,6))) 
                       * 6371 * COS(2 * pi() / 360 * (%1$s + CAST(%3$s AS DECIMAL(10,6))) * 0.5),2
                     )
-                  )
+                  ), 2
                 ) 
                 AS item_dist
             FROM
