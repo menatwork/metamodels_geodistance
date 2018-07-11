@@ -35,7 +35,7 @@
     "menatwork/contao-multicolumnwizard": "^3.3"
   },
  "require-dev": {
-    "cyberspectrum/contao-toolbox": "^1.0",
+    "cyberspectrum/contao-toolbox": "^0.7",
     "phpcq/all-tasks": "^1.2",
     "metamodels/filter_perimetersearch": "^2.0",
     "metamodels/base-unit-tests": "^1.0.4"
