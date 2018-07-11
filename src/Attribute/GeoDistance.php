@@ -68,9 +68,8 @@ class GeoDistance extends BaseComplex
         }
 
         // Get some settings.
-        $objMetaModel = $this->getMetaModel();
-        $getGeo       = $this->get('get_geo');
-        $service      = $this->get('lookupservice');
+        $getGeo  = $this->get('get_geo');
+        $service = $this->get('lookupservice');
 
         // Check if we have a get param.
         if (empty($getGeo) || empty($service)) {
@@ -85,6 +84,27 @@ class GeoDistance extends BaseComplex
         if (empty($geo) && null === $land) {
             return $idList;
         }
+
+        return $this->matchIdList($idList);
+    }
+
+    /**
+     * Match the id list.
+     *
+     * @param array $idList The list of ids.
+     *
+     * @return array
+     */
+    private function matchIdList(array $idList)
+    {
+        $objMetaModel = $this->getMetaModel();
+
+        // Get some settings.
+        $getGeo = $this->get('get_geo');
+
+        // Get the params.
+        $geo  = Input::get($getGeo);
+        $land = $this->getCountryInformation();
 
         try {
             // Get the geo data.
@@ -140,7 +160,7 @@ class GeoDistance extends BaseComplex
                 round(
                   sqrt(power(2 * pi() / 360 * (%1$s - latitude) * 6371, 2) 
                   + power(2 * pi() / 360 * (%2$s - longitude) * 6371 
-                  * COS(2 * pi() / 360 * (%1$s + latitude) * 0.5), 2))) AS item_dist
+                  * COS(2 * pi() / 360 * (%1$s + latitude) * 0.5), 2)), 2) AS item_dist
             FROM
                 tl_metamodel_geolocation
             WHERE
@@ -152,8 +172,8 @@ class GeoDistance extends BaseComplex
         );
 
         $objResult = $this->getDataBase()
-                            ->prepare($subSQL)
-                            ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
+            ->prepare($subSQL)
+            ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
         $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
@@ -200,7 +220,7 @@ class GeoDistance extends BaseComplex
                       + power(2 * pi() / 360 * (%2$s - CAST(%4$s AS DECIMAL(10,6))) 
                       * 6371 * COS(2 * pi() / 360 * (%1$s + CAST(%3$s AS DECIMAL(10,6))) * 0.5),2
                     )
-                  )
+                  ), 2
                 ) 
                 AS item_dist
             FROM
@@ -217,8 +237,8 @@ class GeoDistance extends BaseComplex
         );
 
         $objResult = $this->getDataBase()
-                            ->prepare($subSQL)
-                            ->execute($intDist);
+            ->prepare($subSQL)
+            ->execute($intDist);
 
         $newIdList = [];
         foreach ($objResult->fetchAllAssoc() as $item) {
@@ -403,6 +423,8 @@ class GeoDistance extends BaseComplex
      * @param mixed[] $arrValues The values to be stored into database. Mapping is item id=>value.
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setDataFor($arrValues)
     {
@@ -429,6 +451,8 @@ class GeoDistance extends BaseComplex
      * @param array|null    $arrCount Array for the counted values.
      *
      * @return array All options matching the given conditions as name => value.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
@@ -463,6 +487,8 @@ class GeoDistance extends BaseComplex
      * @param string[] $arrIds The ids of the items to retrieve.
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function unsetDataFor($arrIds)
     {

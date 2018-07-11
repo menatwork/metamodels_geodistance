@@ -23,6 +23,7 @@ namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelId;
+use ContaoCommunityAlliance\DcGeneral\Data\ModelInterface;
 use MetaModels\Factory;
 use MetaModels\Filter\Setting\FilterSettingFactory;
 
@@ -77,8 +78,6 @@ class AttributeListener
             return;
         }
 
-
-        $result      = [];
         $model       = $event->getModel();
         $metaModelId = $model->getProperty('pid');
         if (!$metaModelId) {
@@ -94,6 +93,24 @@ class AttributeListener
             return;
         }
 
+        $event->setOptions($this->fetchAttributeIdOptions($model, $event->getPropertyName(), $metaModelId));
+    }
+
+    /**
+     * Fetch the options for the attribute id.
+     *
+     * @param ModelInterface $model        The model.
+     * @param string         $propertyName The name of the property.
+     * @param string         $metaModelId  The id of the metamodel.
+     *
+     * @return array
+     */
+    private function fetchAttributeIdOptions(ModelInterface $model, $propertyName, $metaModelId)
+    {
+        $metaModelName = $this->factory->translateIdToMetaModelName($metaModelId);
+        $metaModel     = $this->factory->getMetaModel($metaModelName);
+        $result        = [];
+
         $typeFactory = $this->filterFactory->getTypeFactory($model->getProperty('type'));
 
         $typeFilter = [];
@@ -101,7 +118,7 @@ class AttributeListener
             $typeFilter = $typeFactory->getKnownAttributeTypes();
         }
 
-        if ($event->getPropertyName() === 'single_attr_id') {
+        if ($propertyName === 'single_attr_id') {
             $typeFilter = ['geolocation'];
         } else {
             $key = \array_search('geolocation', $typeFilter);
@@ -118,6 +135,7 @@ class AttributeListener
             $strSelectVal          = $attribute->getColName();
             $result[$strSelectVal] = $attribute->getName() . ' [' . $typeName . ']';
         }
-        $event->setOptions($result);
+
+        return $result;
     }
 }
