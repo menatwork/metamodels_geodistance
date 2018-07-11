@@ -21,9 +21,9 @@
 
 namespace MetaModels\DcGeneral\Events\Table\Attribute\GeoDistance;
 
-use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\ModelId;
+use ContaoCommunityAlliance\DcGeneral\Data\ModelInterface;
 use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
 use MetaModels\DcGeneral\Events\BaseSubscriber;
 
@@ -90,8 +90,6 @@ class Subscriber extends BaseSubscriber
             return;
         }
 
-
-        $result      = [];
         $model       = $event->getModel();
         $metaModelId = $model->getProperty('pid');
         if (!$metaModelId) {
@@ -108,6 +106,25 @@ class Subscriber extends BaseSubscriber
             return;
         }
 
+        $event->setOptions($this->fetchAttributeIdOptions($model, $event->getPropertyName(), $metaModelId));
+    }
+
+    /**
+     * Fetch the options for the attribute id.
+     *
+     * @param ModelInterface $model        The model.
+     * @param string         $propertyName The name of the property.
+     * @param string         $metaModelId  The id of the metamodel.
+     *
+     * @return array
+     */
+    private function fetchAttributeIdOptions(ModelInterface $model, $propertyName, $metaModelId)
+    {
+        $factory       = $this->getServiceContainer()->getFactory();
+        $metaModelName = $factory->translateIdToMetaModelName($metaModelId);
+        $metaModel     = $factory->getMetaModel($metaModelName);
+        $result        = [];
+
         $typeFactory = $this
             ->getServiceContainer()
             ->getFilterFactory()
@@ -118,7 +135,7 @@ class Subscriber extends BaseSubscriber
             $typeFilter = $typeFactory->getKnownAttributeTypes();
         }
 
-        if ($event->getPropertyName() === 'single_attr_id') {
+        if ($propertyName === 'single_attr_id') {
             $typeFilter = ['geolocation'];
         } else {
             $key = \array_search('geolocation', $typeFilter);
@@ -135,7 +152,8 @@ class Subscriber extends BaseSubscriber
             $strSelectVal          = $attribute->getColName();
             $result[$strSelectVal] = $attribute->getName() . ' [' . $typeName . ']';
         }
-        $event->setOptions($result);
+
+        return $result;
     }
 
     /**
