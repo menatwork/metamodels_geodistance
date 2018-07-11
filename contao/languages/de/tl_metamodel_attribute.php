@@ -6,11 +6,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  *
  * @link https://www.transifex.com/signup/
- * @link https://www.transifex.com/projects/p/$$project$$/language/$$lang$$/
+ * @link https://www.transifex.com/projects/p/$$project$$/language/de/
  *
- * last-updated: 2018-04-25T10:14:35+02:00
+ * last-updated: 2018-07-11T13:19:31+02:00
  */
-
 
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']['0']                    = 'GET-Parameter für Land';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']['1']                    = 'Hier können Sie einen GET-Parameter für ein Land vorgeben.';
@@ -21,16 +20,22 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode']['1']               
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['get']          = 'GET-Parameter verwenden';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['none']         = 'Nichts';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['preset']       = 'Voreinstellung aus Systemeinstellungen';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['data_legend']                         = 'Dateneinstellungen';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode']['0']                       = 'Datenmodus';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode']['1']                       = 'Hier können Sie auswählen, ob ein oder zwei Attribute für die Übergabe der Geokoordinaten genutzt werden sollen.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['multi']           = 'Multimodus - mehrere Attribute';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['datamode_options']['single']          = 'Einzelmodus - ein Attribut';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['first_attr_id']['0']                  = 'Attribut - geografische Breite (Lat)';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['first_attr_id']['1']                  = 'Bitte wählen Sie das Attribut für den geografischen Breitenwert aus.';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo']['0']                        = 'GET-Parameter für Adresse';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_geo']['1']                        = 'Hier können Sie einen GET-Parameter für die Adresse vorgeben.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land']['0']                       = 'GET-Parameter für Land';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land']['1']                       = 'Hier können Sie einen GET-Parameter für ein Land vorgeben.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['0']                  = 'LookUp Services';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['1']                  = 'Hier können Sie auswählen, welcher Dienst benutzt wird um Adressdaten aufzulösen.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']['0']     = 'API Token';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']['1']     = 'Hier können Sie ein API-Token angeben.';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['parameter_legend']                    = 'Adressen-Parameter';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['google_maps']      = 'GoogleMaps-Koordinatensuche';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['open_street_maps'] = 'OpenStreetMap-Koordinatensuche';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['second_attr_id']['0']                 = 'Attribut - geografische Länge (Lng)';
