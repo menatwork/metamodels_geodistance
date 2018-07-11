@@ -12,22 +12,26 @@
  *
  * @package    MetaModels
  * @subpackage AttributeGeoDistance
- * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['numeric'] = [
-    'presentation' => [
-        'tl_class',
-    ],
-    'functions'    => [
-        'mandatory',
-    ],
-    'overview'     => [
-        'filterable',
-        'searchable',
-    ],
-];
+error_reporting(E_ALL);
+
+function includeIfExists($file)
+{
+	return file_exists($file) ? include $file : false;
+}
+
+if (
+	// Locally installed dependencies
+	(!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php'))
+	// We are within an composer install.
+	&& (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
+	echo 'You must set up the project dependencies, run the following commands:'.PHP_EOL.
+		'curl -sS https://getcomposer.org/installer | php'.PHP_EOL.
+		'php composer.phar install'.PHP_EOL;
+	exit(1);
+}
