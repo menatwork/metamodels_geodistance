@@ -13,6 +13,7 @@
  * @package    MetaModels/attribute_geodistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -129,6 +130,7 @@ class GeoDistance extends BaseComplex
             }
         } catch (\Exception $e) {
             // Should be never happened, just in case.
+            return $idList;
         }
 
         // Base implementation, do not perform any sorting.
@@ -299,6 +301,7 @@ class GeoDistance extends BaseComplex
                 }
             } catch (\RuntimeException $exc) {
                 // Okay, we have an error try next one.
+                continue;
             }
         }
 
