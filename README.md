@@ -2,7 +2,6 @@
 [![Latest Version tagged](http://img.shields.io/github/tag/MetaModels/attribute_geodistance.svg)](https://github.com/MetaModels/attribute_geodistance/tags)
 [![Latest Version on Packagist](http://img.shields.io/packagist/v/MetaModels/attribute_geodistance.svg)](https://packagist.org/packages/MetaModels/attribute_geodistance)
 [![Installations via composer per month](http://img.shields.io/packagist/dm/MetaModels/attribute_geodistance.svg)](https://packagist.org/packages/MetaModels/attribute_geodistance)
-[![Dependency Status](https://www.versioneye.com/php/metamodels:attribute_geodistance/badge.svg)](https://www.versioneye.com/php/metamodels:attribute_geodistance)
 
 Geo distance
 =========
