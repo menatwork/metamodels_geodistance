@@ -28,10 +28,6 @@ use MetaModels\Filter\Helper\Perimetersearch\LookUp\Provider\Container;
 
 /**
  * This is the MetaModelAttribute class for handling numeric fields.
- *
- * @package    MetaModels
- * @subpackage AttributeNumeric
- * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  */
 class GeoDistance extends BaseComplex
 {
