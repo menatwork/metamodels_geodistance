@@ -32,11 +32,11 @@
     "contao-community-alliance/dc-general": "^2.0.0",
     "contao/core": "^3.5.5",
     "menatwork/contao-multicolumnwizard": "^3.3",
-    "metamodels/core": "^2.0"
+    "metamodels/core": "^2.0",
+    "metamodels/filter_perimetersearch": "^2.0"
   },
   "require-dev": {
     "metamodels/base-unit-tests": "^1.0.4",
-    "metamodels/filter_perimetersearch": "^2.0",
     "phpcq/all-tasks": "^1.2"
   },
   "autoload": {
