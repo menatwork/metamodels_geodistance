@@ -13,6 +13,7 @@
  * @package    MetaModels
  * @subpackage AttributeGeoDistanceBundle
  * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -25,6 +26,7 @@ use Doctrine\DBAL\Driver;
 use MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory;
 use MetaModels\AttributeGeoDistanceBundle\Attribute\GeoDistance;
 use MetaModels\Helper\TableManipulator;
+use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,13 +39,24 @@ class AttributeTypeFactoryTest extends TestCase
     /**
      * Test the constructor.
      *
+     * @return void
+     *
      * @covers \MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory::__construct
      */
     public function testConstructor()
     {
-        $this->assertInstanceOf(AttributeTypeFactory::class, $this->mockFactory());
+        $driver           = $this->getMockBuilder(Driver::class)->getMock();
+        $connection       = $this->getMockBuilder(Connection::class)->setConstructorArgs([[], $driver])->getMock();
+        $tableManipulator = new TableManipulator($connection, []);
+
+        $this->assertInstanceOf(AttributeTypeFactory::class, new AttributeTypeFactory($connection, $tableManipulator));
     }
 
+    /**
+     * Test getTypeName().
+     *
+     * @return void
+     */
     public function testTypeName()
     {
         $factory = $this->mockFactory();
@@ -51,50 +64,43 @@ class AttributeTypeFactoryTest extends TestCase
         $this->assertSame('geodistance', $factory->getTypeName());
     }
 
+    /**
+     * Test getTypeIcon().
+     *
+     * @return void
+     */
     public function testTypeIcon()
     {
         $factory = $this->mockFactory();
 
-        $this->assertSame('system/modules/metamodelsattribute_geodistance/html/numeric.png', $factory->getTypeIcon());
+        $this->assertSame('bundles/metamodelsattributegeodistance/image/numeric.png', $factory->getTypeIcon());
     }
 
+    /**
+     * Test create instance.
+     *
+     * @return void
+     */
     public function testTypeClass()
     {
-        $driver           = $this->getMockBuilder(Driver::class)->getMock();
-        $connection       = $this->getMockBuilder(Connection::class)->setConstructorArgs([[], $driver])->getMock();
-        $tableManipulator =
-            $this->getMockBuilder(TableManipulator::class)->setConstructorArgs([$connection, []])->getMock();
+        $factory   = $this->mockFactory();
+        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
 
-        $originalFactory = new AttributeTypeFactory($connection, $tableManipulator);
-
-        $reflectionProperty = new \ReflectionProperty(\get_class($originalFactory), 'typeClass');
-        $reflectionProperty->setAccessible(true);
-
-        $this->assertSame(GeoDistance::class, $reflectionProperty->getValue($originalFactory));
+        $this->assertInstanceOf(GeoDistance::class, $factory->createInstance([], $metaModel));
     }
 
-    private function mockFactory()
+    /**
+     * Create a factory.
+     *
+     * @return AttributeTypeFactory
+     */
+    private function mockFactory(): AttributeTypeFactory
     {
         $driver           = $this->getMockBuilder(Driver::class)->getMock();
         $connection       = $this->getMockBuilder(Connection::class)->setConstructorArgs([[], $driver])->getMock();
-        $tableManipulator =
-            $this->getMockBuilder(TableManipulator::class)->setConstructorArgs([$connection, []])->getMock();
+        $tableManipulator = new TableManipulator($connection, []);
 
-        $originalFactory = new AttributeTypeFactory($connection, $tableManipulator);
-
-        $reflectionProperty = new \ReflectionProperty(\get_class($originalFactory), 'typeClass');
-        $reflectionProperty->setAccessible(true);
-
-        $factory = $this->getMockBuilder(AttributeTypeFactory::class)
-            ->setConstructorArgs(
-                [
-                    $connection,
-                    $tableManipulator
-                ]
-            )->getMock();
-
-        $factory->method('getTypeName')->willReturn($originalFactory->getTypeName());
-        $factory->method('getTypeIcon')->willReturn($originalFactory->getTypeIcon());
+        $factory = new AttributeTypeFactory($connection, $tableManipulator);
 
         return $factory;
     }
