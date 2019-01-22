@@ -14,6 +14,7 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -33,15 +34,15 @@ if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
 }
 
 // Subpalettes.
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['single'] =
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['single']    =
     ['single_attr_id'];
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['multi'] = [
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['datamode']['multi']     = [
     'first_attr_id',
     'second_attr_id'
 ];
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['preset']  =
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['preset'] =
     ['country_preset'];
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['get']     =
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metasubselectpalettes']['countrymode']['get']    =
     ['country_get'];
 
 // Fields.
@@ -93,16 +94,6 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['country_get'] = [
     ],
     'sql'      => 'text NULL'
 ];
-/*$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_land'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['get_land'],
-    'exclude'   => true,
-    'inputType' => 'text',
-    'sql'       => 'varchar(255) NOT NULL default \'\'',
-    'eval'      => [
-        'tl_class' => 'w50 w50x',
-        'mandatory'          => true
-    ],
-];*/
 
 // Add the lookup service if the filter perimeter search is available.
 if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
@@ -126,7 +117,7 @@ if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
                         'style'              => 'width:250px',
                     ]
                 ],
-                'apiToken' =>[
+                'apiToken' => [
                     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token'],
                     'exclude'   => true,
                     'inputType' => 'text',
