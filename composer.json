@@ -44,7 +44,10 @@
   "autoload": {
     "psr-4": {
       "MetaModels\\AttributeGeoDistanceBundle\\": "src"
-    }
+    },
+    "files": [
+      "src/deprecated-autoload.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
