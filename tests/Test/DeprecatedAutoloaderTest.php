@@ -1,7 +1,7 @@
 <?php
 
 /**
- * * This file is part of MetaModels/attribute_text.
+ * This file is part of MetaModels/attribute_geodistance.
  *
  * (c) 2012-2019 The MetaModels team.
  *
@@ -10,11 +10,10 @@
  *
  * This project is provided in good faith and hope to be usable by anyone.
  *
- * @package    MetaModels
- * @subpackage AttributeText
+ * @package    MetaModels/attribute_geodistance
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @copyright  2012-2019 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_text/blob/master/LICENSE LGPL-3.0-or-later
+ * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
