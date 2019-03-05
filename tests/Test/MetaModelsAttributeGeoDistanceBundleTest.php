@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * Class MetaModelsAttributeGeoDistanceBundleTest
  *
- * @covers  \MetaModels\AttributeGeoDistanceBundle\MetaModelsAttributeGeoDistanceBundle
+ * @covers \MetaModels\AttributeGeoDistanceBundle\MetaModelsAttributeGeoDistanceBundle
  */
 class MetaModelsAttributeGeoDistanceBundleTest extends TestCase
 {
