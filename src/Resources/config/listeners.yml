@@ -1,12 +1,4 @@
 services:
-    metamodels.attribute_geodistance.factory:
-        class: MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory
-        arguments:
-            - "@database_connection"
-            - "@metamodels.table_manipulator"
-        tags:
-          - { name: metamodels.attribute_factory }
-
     metamdodels.attribute_geodistance.event_listener.attribute_listener:
         class: MetaModels\AttributeGeoDistanceBundle\EventListener\AttributeListener
         public: true
