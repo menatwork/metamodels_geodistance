@@ -94,7 +94,7 @@ class GeoDistance extends BaseComplex
      */
     private function matchIdList(array $idList)
     {
-        $objMetaModel = $this->getMetaModel();
+        $metaModel = $this->getMetaModel();
 
         // Get some settings.
         $getGeo = $this->get('get_geo');
@@ -105,29 +105,29 @@ class GeoDistance extends BaseComplex
 
         try {
             // Get the geo data.
-            $objContainer = $this->lookupGeo($geo, $land);
+            $container = $this->lookupGeo($geo, $land);
 
             // Okay we cant find a entry. So search for nothing.
-            if ((null == $objContainer) || $objContainer->hasError()) {
+            if ((null === $container) || $container->hasError()) {
                 return $idList;
             }
 
             if ('single' === $this->get('datamode')) {
                 // Get the attribute.
-                $objAttribute = $objMetaModel->getAttribute($this->get('single_attr_id'));
+                $attribute = $metaModel->getAttribute($this->get('single_attr_id'));
 
                 // Search for the geolocation attribute.
-                if ('geolocation' === $objAttribute->get('type')) {
-                    $idList = $this->doSearchForAttGeolocation($objContainer, $idList);
+                if ('geolocation' === $attribute->get('type')) {
+                    $idList = $this->doSearchForAttGeolocation($container, $idList);
                 }
             } elseif ('multi' === $this->get('datamode')) {
                 // Get the attributes.
-                $objFirstAttribute  = $objMetaModel->getAttribute($this->get('first_attr_id'));
-                $objSecondAttribute = $objMetaModel->getAttribute($this->get('second_attr_id'));
+                $firstAttribute  = $metaModel->getAttribute($this->get('first_attr_id'));
+                $secondAttribute = $metaModel->getAttribute($this->get('second_attr_id'));
 
                 // Search for two simple attributes.
                 $idList = $this
-                    ->doSearchForTwoSimpleAtt($objContainer, $idList, $objFirstAttribute, $objSecondAttribute);
+                    ->doSearchForTwoSimpleAtt($container, $idList, $firstAttribute, $secondAttribute);
             }
         } catch (\Exception $e) {
             // Should be never happened, just in case.
@@ -169,12 +169,12 @@ class GeoDistance extends BaseComplex
             \implode(', ', $idList)
         );
 
-        $objResult = $this->getDataBase()
+        $result = $this->getDataBase()
             ->prepare($subSQL)
             ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
         $newIdList = [];
-        foreach ($objResult->fetchAllAssoc() as $item) {
+        foreach ($result->fetchAllAssoc() as $item) {
             $id              = $item['item_id'];
             $distance        = $item['item_dist'];
             $newIdList[]     = $id;
@@ -234,12 +234,12 @@ class GeoDistance extends BaseComplex
             $this->getMetaModel()->getTableName()
         );
 
-        $objResult = $this->getDataBase()
+        $result = $this->getDataBase()
             ->prepare($subSQL)
             ->execute($intDist);
 
         $newIdList = [];
-        foreach ($objResult->fetchAllAssoc() as $item) {
+        foreach ($result->fetchAllAssoc() as $item) {
             $id              = $item['id'];
             $distance        = $item['item_dist'];
             $newIdList[]     = $id;
@@ -254,50 +254,50 @@ class GeoDistance extends BaseComplex
     /**
      * User the provider classes to make a look up.
      *
-     * @param string $strAddress The full address to search for.
+     * @param string $address The full address to search for.
      *
-     * @param string $strCountry The country as 2-letters form.
+     * @param string $country The country as 2-letters form.
      *
      * @return Container|null Return the container with all information or null on error.
      */
-    protected function lookupGeo($strAddress, $strCountry)
+    protected function lookupGeo($address, $country)
     {
         // Trim the data. Better!
-        $strAddress = \trim($strAddress);
-        $strCountry = \trim($strCountry);
+        $address = \trim($address);
+        $country = \trim($country);
 
         // First check cache.
-        $objCacheResult = $this->getFromCache($strAddress, $strCountry);
-        if (null !== $objCacheResult) {
-            return $objCacheResult;
+        $cacheResult = $this->getFromCache($address, $country);
+        if (null !== $cacheResult) {
+            return $cacheResult;
         }
 
         // If there is no data from the cache ask google.
-        $arrLookupServices = StringUtil::deserialize($this->get('lookupservice'), true);
-        if (!count($arrLookupServices)) {
+        $lookupServices = StringUtil::deserialize($this->get('lookupservice'), true);
+        if (!count($lookupServices)) {
             return null;
         }
 
-        foreach ($arrLookupServices as $arrSettings) {
+        foreach ($lookupServices as $lookupService) {
             try {
-                $objCallbackClass = $this->getObjectFromName($arrSettings['lookupservice']);
+                $callback = $this->getObjectFromName($lookupService['lookupservice']);
 
                 // Call the main function.
-                if (null !== $objCallbackClass) {
-                    /** @var Container $objResult */
-                    $objResult = $objCallbackClass
+                if (null !== $callback) {
+                    /** @var Container $result */
+                    $result = $callback
                         ->getCoordinates(
                             null,
                             null,
                             null,
-                            $strCountry,
-                            $strAddress,
-                            $arrSettings['apiToken'] ?: null
+                            $country,
+                            $address,
+                            $lookupService['apiToken'] ?: null
                         );
 
                     // Check if we have a result.
-                    if (!$objResult->hasError()) {
-                        return $objResult;
+                    if (!$result->hasError()) {
+                        return $result;
                     }
                 }
             } catch (\RuntimeException $exc) {
@@ -327,30 +327,23 @@ class GeoDistance extends BaseComplex
             return null;
         }
 
-        $sClass           = $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'][$lookupClassName];
-        $objCallbackClass = null;
-        $oClass           = new \ReflectionClass($sClass);
+        $reflectionName = $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'][$lookupClassName];
+        $reflection     = new \ReflectionClass($reflectionName);
 
         // Fetch singleton instance.
-        if ($oClass->hasMethod('getInstance')) {
-            $getInstanceMethod = $oClass->getMethod('getInstance');
+        if ($reflection->hasMethod('getInstance')) {
+            $getInstanceMethod = $reflection->getMethod('getInstance');
 
             // Create a new instance.
             if ($getInstanceMethod->isStatic()) {
-                $objCallbackClass = $getInstanceMethod->invoke(null);
-
-                return $objCallbackClass;
+                return $getInstanceMethod->invoke(null);
             }
 
-            $objCallbackClass = $oClass->newInstance();
-
-            return $objCallbackClass;
+            return $reflection->newInstance();
         }
 
         // Create a normal object.
-        $objCallbackClass = $oClass->newInstance();
-
-        return $objCallbackClass;
+        return $reflection->newInstance();
     }
 
     /**
@@ -461,15 +454,15 @@ class GeoDistance extends BaseComplex
     /**
      * This method is called to retrieve the data for certain items from the database.
      *
-     * @param string[] $arrIds The ids of the items to retrieve.
+     * @param string[] $idList The ids of the items to retrieve.
      *
      * @return mixed[] The nature of the resulting array is a mapping from id => "native data" where
      *                 the definition of "native data" is only of relevance to the given item.
      */
-    public function getDataFor($arrIds)
+    public function getDataFor($idList)
     {
         $return = [];
-        foreach ($arrIds as $id) {
+        foreach ($idList as $id) {
             if (isset(self::$data[$id])) {
                 $return[$id] = self::$data[$id];
             } else {
@@ -483,13 +476,13 @@ class GeoDistance extends BaseComplex
     /**
      * Remove values for items.
      *
-     * @param string[] $arrIds The ids of the items to retrieve.
+     * @param string[] $idList The ids of the items to retrieve.
      *
      * @return void
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function unsetDataFor($arrIds)
+    public function unsetDataFor($idList)
     {
         // No-op.
     }
@@ -502,18 +495,18 @@ class GeoDistance extends BaseComplex
     private function getCountryInformation()
     {
         // Get the country for the lookup.
-        $strCountry = null;
+        $country = null;
 
         if (('get' === $this->get('countrymode')) && $this->get('country_get')) {
             $getValue = Input::get($this->get('country_get')) ?: Input::post($this->get('country_get'));
             $getValue = \trim($getValue);
             if (!empty($getValue)) {
-                $strCountry = $getValue;
+                $country = $getValue;
             }
         } elseif ('preset' === $this->get('countrymode')) {
-            $strCountry = $this->get('country_preset');
+            $country = $this->get('country_preset');
         }
 
-        return $strCountry;
+        return $country;
     }
 }

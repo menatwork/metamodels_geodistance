@@ -131,8 +131,8 @@ class AttributeListener
             if ($typeFilter && (!\in_array($typeName, $typeFilter))) {
                 continue;
             }
-            $strSelectVal          = $attribute->getColName();
-            $result[$strSelectVal] = $attribute->getName() . ' [' . $typeName . ']';
+            $selectValue          = $attribute->getColName();
+            $result[$selectValue] = $attribute->getName() . ' [' . $typeName . ']';
         }
 
         return $result;

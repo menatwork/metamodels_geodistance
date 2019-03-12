@@ -38,7 +38,7 @@ class LookUpServiceListener
     /**
      * The constructor.
      *
-     * @param TranslatorInterface   $translator    The translator.
+     * @param TranslatorInterface $translator The translator.
      */
     public function __construct(TranslatorInterface $translator)
     {
@@ -65,14 +65,14 @@ class LookUpServiceListener
             return;
         }
 
-        $arrClasses = (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'];
+        $resolveClass = (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'];
 
-        $domain     = 'tl_metamodel_attribute';
-        $arrReturn  = [];
-        foreach (\array_keys($arrClasses) as $name) {
-            $arrReturn[$name] = $this->translator->trans($domain . '.perimetersearch.' . $name, [], 'contao_' . $domain);
+        $domain  = 'tl_metamodel_attribute';
+        $options = [];
+        foreach (\array_keys($resolveClass) as $name) {
+            $options[$name] = $this->translator->trans($domain . '.perimetersearch.' . $name, [], 'contao_' . $domain);
         }
 
-        $event->setOptions($arrReturn);
+        $event->setOptions($options);
     }
 }
