@@ -23,6 +23,7 @@ namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 
 use Contao\Database;
 use Contao\Input;
+use Contao\StringUtil;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
@@ -272,7 +273,7 @@ class GeoDistance extends BaseComplex
         }
 
         // If there is no data from the cache ask google.
-        $arrLookupServices = \deserialize($this->get('lookupservice'), true);
+        $arrLookupServices = StringUtil::deserialize($this->get('lookupservice'), true);
         if (!count($arrLookupServices)) {
             return null;
         }

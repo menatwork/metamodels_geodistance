@@ -19,7 +19,7 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
-use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
+use MenAtWork\MultiColumnWizardBundle\Event\GetOptionsEvent;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**

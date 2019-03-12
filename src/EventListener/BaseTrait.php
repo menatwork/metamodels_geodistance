@@ -20,7 +20,7 @@
 namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
-use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
+use MenAtWork\MultiColumnWizardBundle\Event\GetOptionsEvent;
 
 /**
  * This trait provide common methods and properties for the event listener.
