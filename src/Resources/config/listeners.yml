@@ -13,6 +13,8 @@ services:
     metamdodels.attribute_geodistance.event_listener.look_up_service_listener:
         class: MetaModels\AttributeGeoDistanceBundle\EventListener\LookUpServiceListener
         public: true
+        arguments:
+            - "@contao.translation.translator"
         tags:
             -   name: kernel.event_listener
                 event: men-at-work.multi-column-wizard.get-options

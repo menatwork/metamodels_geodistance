@@ -20,6 +20,7 @@
 namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
 use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * This class provides the attribute options and encodes and decodes the attribute id.
@@ -27,6 +28,22 @@ use MenAtWork\MultiColumnWizard\Event\GetOptionsEvent;
 class LookUpServiceListener
 {
     use BaseTrait;
+    /**
+     * The translator.
+     *
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * The constructor.
+     *
+     * @param TranslatorInterface   $translator    The translator.
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
 
     /**
      * Get a list with all supported resolver class for a geo lookup.
@@ -49,11 +66,11 @@ class LookUpServiceListener
         }
 
         $arrClasses = (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'];
+
+        $domain     = 'tl_metamodel_attribute';
         $arrReturn  = [];
         foreach (\array_keys($arrClasses) as $name) {
-            $arrReturn[$name] = (isset($GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]))
-                ? $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch'][$name]
-                : $name;
+            $arrReturn[$name] = $this->translator->trans($domain . '.perimetersearch.' . $name, [], 'contao_' . $domain);
         }
 
         $event->setOptions($arrReturn);
