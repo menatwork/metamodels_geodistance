@@ -77,7 +77,7 @@ class GeoDistance extends BaseComplex
         $land = $this->getCountryInformation();
 
         // Check if we have some geo params.
-        if (empty($geo) && null === $land) {
+        if (empty($geo) && (null === $land)) {
             return $idList;
         }
 
@@ -107,19 +107,19 @@ class GeoDistance extends BaseComplex
             $objContainer = $this->lookupGeo($geo, $land);
 
             // Okay we cant find a entry. So search for nothing.
-            if ($objContainer == null || $objContainer->hasError()) {
+            if ((null == $objContainer) || $objContainer->hasError()) {
                 return $idList;
             }
 
-            if ($this->get('datamode') == 'single') {
+            if ('single' === $this->get('datamode')) {
                 // Get the attribute.
                 $objAttribute = $objMetaModel->getAttribute($this->get('single_attr_id'));
 
                 // Search for the geolocation attribute.
-                if ($objAttribute->get('type') == 'geolocation') {
+                if ('geolocation' === $objAttribute->get('type')) {
                     $idList = $this->doSearchForAttGeolocation($objContainer, $idList);
                 }
-            } elseif ($this->get('datamode') == 'multi') {
+            } elseif ('multi' === $this->get('datamode')) {
                 // Get the attributes.
                 $objFirstAttribute  = $objMetaModel->getAttribute($this->get('first_attr_id'));
                 $objSecondAttribute = $objMetaModel->getAttribute($this->get('second_attr_id'));
@@ -151,7 +151,7 @@ class GeoDistance extends BaseComplex
         // Get location.y
         $lat    = $container->getLatitude();
         $lng    = $container->getLongitude();
-        $subSQL = sprintf(
+        $subSQL = \sprintf(
             'SELECT
                 item_id,
                 round(
@@ -267,14 +267,14 @@ class GeoDistance extends BaseComplex
 
         // First check cache.
         $objCacheResult = $this->getFromCache($strAddress, $strCountry);
-        if ($objCacheResult !== null) {
+        if (null !== $objCacheResult) {
             return $objCacheResult;
         }
 
         // If there is no data from the cache ask google.
         $arrLookupServices = \deserialize($this->get('lookupservice'), true);
         if (!count($arrLookupServices)) {
-            return false;
+            return null;
         }
 
         foreach ($arrLookupServices as $arrSettings) {
@@ -282,7 +282,7 @@ class GeoDistance extends BaseComplex
                 $objCallbackClass = $this->getObjectFromName($arrSettings['lookupservice']);
 
                 // Call the main function.
-                if ($objCallbackClass != null) {
+                if (null !== $objCallbackClass) {
                     /** @var Container $objResult */
                     $objResult = $objCallbackClass
                         ->getCoordinates(
@@ -339,17 +339,17 @@ class GeoDistance extends BaseComplex
                 $objCallbackClass = $getInstanceMethod->invoke(null);
 
                 return $objCallbackClass;
-            } else {
-                $objCallbackClass = $oClass->newInstance();
-
-                return $objCallbackClass;
             }
-        } else {
-            // Create a normal object.
+
             $objCallbackClass = $oClass->newInstance();
 
             return $objCallbackClass;
         }
+
+        // Create a normal object.
+        $objCallbackClass = $oClass->newInstance();
+
+        return $objCallbackClass;
     }
 
     /**
@@ -370,7 +370,7 @@ class GeoDistance extends BaseComplex
             ->execute($address, $country);
 
         // If we have no data just return null.
-        if ($result->count() === 0) {
+        if (0 === $result->count()) {
             return null;
         }
 
@@ -503,13 +503,13 @@ class GeoDistance extends BaseComplex
         // Get the country for the lookup.
         $strCountry = null;
 
-        if ($this->get('countrymode') === 'get' && $this->get('country_get')) {
+        if (('get' === $this->get('countrymode')) && $this->get('country_get')) {
             $getValue = Input::get($this->get('country_get')) ?: Input::post($this->get('country_get'));
             $getValue = \trim($getValue);
             if (!empty($getValue)) {
                 $strCountry = $getValue;
             }
-        } elseif ($this->get('countrymode') === 'preset') {
+        } elseif ('preset' === $this->get('countrymode')) {
             $strCountry = $this->get('country_preset');
         }
 

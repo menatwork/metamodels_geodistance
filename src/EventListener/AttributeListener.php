@@ -117,16 +117,16 @@ class AttributeListener
             $typeFilter = $typeFactory->getKnownAttributeTypes();
         }
 
-        if ($propertyName === 'single_attr_id') {
+        if ('single_attr_id' === $propertyName) {
             $typeFilter = ['geolocation'];
         } else {
             $key = \array_search('geolocation', $typeFilter);
-            if ($key !== null) {
+            if (null !== $key) {
                 unset($typeFilter[$key]);
             }
         }
 
-        foreach ($metaModel->getAttributes() as $attribute) {
+        foreach ((array) $metaModel->getAttributes() as $attribute) {
             $typeName = $attribute->get('type');
             if ($typeFilter && (!\in_array($typeName, $typeFilter))) {
                 continue;

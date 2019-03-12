@@ -14,14 +14,14 @@ services:
             - "@metamodels.factory"
             - "@metamodels.filter_setting_factory"
         tags:
-            - name: kernel.event_listener
-              event: dc-general.view.contao2backend.get-property-options
-              method: getAttributeIdOptions
+            -   name: kernel.event_listener
+                event: dc-general.view.contao2backend.get-property-options
+                method: getAttributeIdOptions
 
     metamdodels.attribute_geodistance.event_listener.look_up_service_listener:
         class: MetaModels\AttributeGeoDistanceBundle\EventListener\LookUpServiceListener
         public: true
         tags:
-            - name: kernel.event_listener
-              event: men-at-work.multi-column-wizard.get-options
-              method: getResolverClass
+            -   name: kernel.event_listener
+                event: men-at-work.multi-column-wizard.get-options
+                method: getResolverClass

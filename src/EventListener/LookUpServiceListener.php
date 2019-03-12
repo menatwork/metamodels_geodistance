@@ -43,7 +43,7 @@ class LookUpServiceListener
         // Check the context.
         $allowedProperties = ['lookupservice'];
         if (!$this->isAllowedProperty($event, 'tl_metamodel_attribute', $allowedProperties)
-            || 'lookupservice' !== $event->getSubPropertyName()
+            || ('lookupservice' !== $event->getSubPropertyName())
         ) {
             return;
         }
