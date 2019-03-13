@@ -24,10 +24,13 @@ namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 use Contao\Database;
 use Contao\Input;
 use Contao\StringUtil;
+use Contao\System;
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\AttributeGeoDistanceBundle\Helper\SphericalDistance;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
+use MetaModels\IMetaModel;
 
 /**
  * This is the MetaModelAttribute class for handling numeric fields.
@@ -36,24 +39,48 @@ class GeoDistance extends BaseComplex
 {
 
     /**
+     * The database connection.
+     *
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * Instantiate an MetaModel attribute.
+     *
+     * Note that you should not use this directly but use the factory classes to instantiate attributes.
+     *
+     * @param IMetaModel $metaModel    The MetaModel instance this attribute belongs to.
+     * @param array      $data         The information array, for attribute information, refer to documentation of
+     *                                 table tl_metamodel_attribute and documentation of the certain attribute
+     *                                 classes for information what values are understood.
+     * @param Connection $connection   The database connection.
+     */
+    public function __construct(IMetaModel $metaModel, array $data = [], Connection $connection = null)
+    {
+        parent::__construct($metaModel, $data);
+
+        if (null === $connection) {
+            // @codingStandardsIgnoreStart
+            @\trigger_error(
+                'Connection is missing. It has to be passed in the constructor. Fallback will be dropped.',
+                E_USER_DEPRECATED
+            );
+            // @codingStandardsIgnoreEnd
+            $this->connection = System::getContainer()->get('database_connection');
+
+            return;
+        }
+
+        $this->connection = $connection;
+    }
+
+    /**
      * A internal list with values.
      *
      * @var array
      */
     protected static $data = [];
-
-    /**
-     * Retrieve the database.
-     *
-     * @return Database
-     */
-    private function getDataBase()
-    {
-        return $this
-            ->getMetaModel()
-            ->getServiceContainer()
-            ->getDatabase();
-    }
 
     /**
      * {@inheritdoc}
@@ -147,38 +174,36 @@ class GeoDistance extends BaseComplex
      * @param array     $idList    A list with ids.
      *
      * @return array A list with all sorted id's.
+     *
+     * @see https://www.movable-type.co.uk/scripts/latlong.html
      */
     protected function doSearchForAttGeolocation($container, $idList)
     {
-        $subSQL = \sprintf(
-            'SELECT
-                item_id,
-                %1$s AS item_dist
-            FROM
-                tl_metamodel_geolocation
-            WHERE
-                item_id IN(%2$s) AND att_id = ?
-            ORDER BY item_dist',
-            SphericalDistance::getHaversineFormulaAsQueryPart(
-                $container->getLatitude(),
-                $container->getLongitude(),
-                'latitude',
-                'longitude',
-                2
-            ),
-            \implode(', ', $idList)
+        // Calculate distance, bearing and more between Latitude/Longitude points
+        $distanceCalculation = SphericalDistance::getHaversineFormulaAsQueryPart(
+            $container->getLatitude(),
+            $container->getLongitude(),
+            'latitude',
+            'longitude',
+            2
         );
 
-        $result = $this->getDataBase()
-            ->prepare($subSQL)
-            ->execute($this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
+        $builder = $this->connection->createQueryBuilder();
+        $builder
+            ->select('id', $distanceCalculation . ' item_dist')
+            ->from('tl_metamodel_geolocation')
+            ->where($builder->expr()->in('id', ':idList'))
+            ->andWhere('att_id', ':attributeID')
+            ->orderBy('item_dist')
+            ->setParameter('idList', $idList, Connection::PARAM_STR_ARRAY)
+            ->setParameter('attributeID', $this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
+
+        $statement = $builder->execute();
 
         $newIdList = [];
-        foreach ($result->fetchAllAssoc() as $item) {
-            $id              = $item['item_id'];
-            $distance        = $item['item_dist'];
-            $newIdList[]     = $id;
-            self::$data[$id] = $distance;
+        foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
+            $newIdList[]           = $item->id;
+            self::$data[$item->id] = $item->item_dist;
         }
 
         $diff = \array_diff($idList, $newIdList);
@@ -198,39 +223,34 @@ class GeoDistance extends BaseComplex
      * @param IAttribute $longAttribute The attribute to filter on.
      *
      * @return array A list with all sorted id's.
+     *
+     * @see https://www.movable-type.co.uk/scripts/latlong.html
      */
     protected function doSearchForTwoSimpleAtt($container, $idList, $latAttribute, $longAttribute)
     {
-        $subSQL = \sprintf(
-            'SELECT
-                id,
-                %1$s AS item_dist
-            FROM
-                %3$s
-            WHERE
-                id IN(%2$s)
-            ORDER BY item_dist',
-            SphericalDistance::getHaversineFormulaAsQueryPart(
-                $container->getLatitude(),
-                $container->getLongitude(),
-                $latAttribute->getColName(),
-                $longAttribute->getColName(),
-                2
-            ),
-            \implode(', ', $idList),
-            $this->getMetaModel()->getTableName()
+        // Calculate distance, bearing and more between Latitude/Longitude points
+        $distanceCalculation = SphericalDistance::getHaversineFormulaAsQueryPart(
+            $container->getLatitude(),
+            $container->getLongitude(),
+            $latAttribute->getColName(),
+            $longAttribute->getColName(),
+            2
         );
 
-        $result = $this->getDataBase()
-            ->prepare($subSQL)
-            ->execute($container->getDistance());
+        $builder = $this->connection->createQueryBuilder();
+        $builder
+            ->select('id', $distanceCalculation . ' item_dist')
+            ->from($this->getMetaModel()->getTableName())
+            ->where($builder->expr()->in('id', ':idList'))
+            ->orderBy('item_dist')
+            ->setParameter('idList', $idList, Connection::PARAM_STR_ARRAY);
+
+        $statement = $builder->execute();
 
         $newIdList = [];
-        foreach ($result->fetchAllAssoc() as $item) {
-            $id              = $item['id'];
-            $distance        = $item['item_dist'];
-            $newIdList[]     = $id;
-            self::$data[$id] = $distance;
+        foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
+            $newIdList[]           = $item->id;
+            self::$data[$item->id] = $item->item_dist;
         }
 
         $diff = \array_diff($idList, $newIdList);
@@ -337,29 +357,43 @@ class GeoDistance extends BaseComplex
      * Get data from cache.
      *
      * @param string $address The address which where use for the search.
-     *
      * @param string $country The country.
      *
      * @return Container|null
      */
     protected function getFromCache($address, $country)
     {
-        // Check cache.
-        $result = $this
-            ->getDataBase()
-            ->prepare('SELECT * FROM tl_metamodel_perimetersearch WHERE search = ? AND country = ?')
-            ->execute($address, $country);
+        $builder = $this->connection->createQueryBuilder();
+        $builder
+            ->select('*')
+            ->from('tl_metamodel_perimetersearch')
+            ->where($builder->expr()->eq('search', ':search'))
+            ->andWhere($builder->expr()->eq('country', ':country'))
+            ->setParameter('search', $address)
+            ->setParameter('country', $country);
+
+        $statement = $builder->execute();
 
         // If we have no data just return null.
-        if (0 === $result->count()) {
+        if (!$statement->rowCount()) {
             return null;
         }
+
+        $result = $statement->fetch(\PDO::FETCH_OBJ);
 
         // Build a new container.
         $container = new Container();
         $container->setLatitude($result->geo_lat);
         $container->setLongitude($result->geo_long);
-        $container->setSearchParam($result->query);
+        $container->setSearchParam(
+            \strtr(
+                $builder->getSQL(),
+                [
+                    ':search'  => $this->connection->quote($address),
+                    ':country' => $this->connection->quote($country)
+                ]
+            )
+        );
 
         return $container;
     }

@@ -35,7 +35,8 @@
         "metamodels/core": "^2.1@dev",
         "metamodels/filter_perimetersearch": "^2.1@dev",
         "symfony/dependency-injection": "^3.3 || ^4.0",
-        "symfony/http-kernel": "^3.3 || ^4.0"
+        "symfony/http-kernel": "^3.3 || ^4.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.1",
