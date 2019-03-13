@@ -26,6 +26,7 @@ use Contao\Input;
 use Contao\StringUtil;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
+use MetaModels\AttributeGeoDistanceBundle\Helper\SphericalDistance;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
 
 /**
@@ -149,23 +150,22 @@ class GeoDistance extends BaseComplex
      */
     protected function doSearchForAttGeolocation($container, $idList)
     {
-        // Get location.y
-        $lat    = $container->getLatitude();
-        $lng    = $container->getLongitude();
         $subSQL = \sprintf(
             'SELECT
                 item_id,
-                round(
-                  sqrt(power(2 * pi() / 360 * (%1$s - latitude) * 6371, 2) 
-                  + power(2 * pi() / 360 * (%2$s - longitude) * 6371 
-                  * COS(2 * pi() / 360 * (%1$s + latitude) * 0.5), 2)), 2) AS item_dist
+                %1$s AS item_dist
             FROM
                 tl_metamodel_geolocation
             WHERE
-                item_id IN(%3$s) AND att_id = ?
+                item_id IN(%2$s) AND att_id = ?
             ORDER BY item_dist',
-            $lat,
-            $lng,
+            SphericalDistance::getHaversineFormulaAsQueryPart(
+                $container->getLatitude(),
+                $container->getLongitude(),
+                'latitude',
+                'longitude',
+                2
+            ),
             \implode(', ', $idList)
         );
 
@@ -201,42 +201,29 @@ class GeoDistance extends BaseComplex
      */
     protected function doSearchForTwoSimpleAtt($container, $idList, $latAttribute, $longAttribute)
     {
-        // Get location.
-        $lat     = $container->getLatitude();
-        $lng     = $container->getLongitude();
-        $intDist = $container->getDistance();
-        $subSQL  = \sprintf(
+        $subSQL = \sprintf(
             'SELECT
                 id,
-                round
-                (
-                  sqrt
-                  (
-                    power
-                    (
-                      2 * pi() / 360 * (%1$s -  CAST(%3$s AS DECIMAL(10,6))   ) * 6371,2) 
-                      + power(2 * pi() / 360 * (%2$s - CAST(%4$s AS DECIMAL(10,6))) 
-                      * 6371 * COS(2 * pi() / 360 * (%1$s + CAST(%3$s AS DECIMAL(10,6))) * 0.5),2
-                    )
-                  ), 2
-                ) 
-                AS item_dist
+                %1$s AS item_dist
             FROM
-                %6$s
+                %3$s
             WHERE
-                id IN(%5$s)
+                id IN(%2$s)
             ORDER BY item_dist',
-            $lat,
-            $lng,
-            $latAttribute->getColName(),
-            $longAttribute->getColName(),
+            SphericalDistance::getHaversineFormulaAsQueryPart(
+                $container->getLatitude(),
+                $container->getLongitude(),
+                $latAttribute->getColName(),
+                $longAttribute->getColName(),
+                2
+            ),
             \implode(', ', $idList),
             $this->getMetaModel()->getTableName()
         );
 
         $result = $this->getDataBase()
             ->prepare($subSQL)
-            ->execute($intDist);
+            ->execute($container->getDistance());
 
         $newIdList = [];
         foreach ($result->fetchAllAssoc() as $item) {
