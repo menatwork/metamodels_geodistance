@@ -298,6 +298,8 @@ class GeoDistance extends BaseComplex
 
                     // Check if we have a result.
                     if (!$result->hasError()) {
+                        $this->addToCache($address, $country, $result);
+
                         return $result;
                     }
                 }
@@ -345,6 +347,30 @@ class GeoDistance extends BaseComplex
 
         // Create a normal object.
         return $reflection->newInstance();
+    }
+
+    /**
+     * Add data to the cache.
+     *
+     * @param string    $address The address which where use for the search.
+     * @param string    $country The country.
+     * @param Container $result  The container with all information.
+     *
+     * @return void
+     *
+     * @throws \Doctrine\DBAL\DBALException When insert fails.
+     */
+    protected function addToCache($address, $country, $result)
+    {
+        $this->connection->insert(
+            'tl_metamodel_perimetersearch',
+            [
+                'search'   => $address,
+                'country'  => $country,
+                'geo_lat'  => $result->getLatitude(),
+                'geo_long' => $result->getLongitude()
+            ]
+        );
     }
 
     /**
