@@ -27,7 +27,7 @@ use Contao\System;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\AttributeGeoDistanceBundle\Helper\SphericalDistance;
+use MetaModels\FilterPerimetersearchBundle\Helper\SphericalDistance;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
 use MetaModels\IMetaModel;
 
