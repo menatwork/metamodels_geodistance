@@ -32,8 +32,8 @@
         "contao/core-bundle": "^4.4.8",
         "doctrine/dbal": "^2.5",
         "menatwork/contao-multicolumnwizard-bundle": "^3.4",
-        "metamodels/core": "^2.1@dev",
-        "metamodels/filter_perimetersearch": "^2.1@dev",
+        "metamodels/core": "^2.1",
+        "metamodels/filter_perimetersearch": "^2.1",
         "symfony/dependency-injection": "^3.3 || ^4.0",
         "symfony/http-kernel": "^3.3 || ^4.0",
         "ext-pdo": "*"
@@ -61,7 +61,7 @@
             "runonce/runonce.php"
         ],
         "branch-alias": {
-            "dev-release/2.1.0": "2.1.x-dev"
+            "dev-master": "2.1.x-dev"
         }
     },
     "config": {
