@@ -60,8 +60,13 @@ class MetaModelsAttributeGeoDistanceBundleTest extends TestCase
         $this->assertInstanceOf(ComposerResource::class, $container->getResources()[0]);
         $this->assertInstanceOf(FileResource::class, $container->getResources()[1]);
         $this->assertSame(
-            \dirname(\dirname(__DIR__)) . '/src/Resources/config/services.yml',
+            \dirname(\dirname(__DIR__)) . '/src/Resources/config/attribute-settings.yml',
             $container->getResources()[1]->getResource()
+        );
+        $this->assertInstanceOf(FileResource::class, $container->getResources()[2]);
+        $this->assertSame(
+            \dirname(\dirname(__DIR__)) . '/src/Resources/config/listeners.yml',
+            $container->getResources()[2]->getResource()
         );
     }
 }
