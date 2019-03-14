@@ -1,0 +1,21 @@
+services:
+    metamdodels.attribute_geodistance.event_listener.attribute_listener:
+        class: MetaModels\AttributeGeoDistanceBundle\EventListener\AttributeListener
+        public: true
+        arguments:
+            - "@metamodels.factory"
+            - "@metamodels.filter_setting_factory"
+        tags:
+            -   name: kernel.event_listener
+                event: dc-general.view.contao2backend.get-property-options
+                method: getAttributeIdOptions
+
+    metamdodels.attribute_geodistance.event_listener.look_up_service_listener:
+        class: MetaModels\AttributeGeoDistanceBundle\EventListener\LookUpServiceListener
+        public: true
+        arguments:
+            - "@contao.translation.translator"
+        tags:
+            -   name: kernel.event_listener
+                event: men-at-work.multi-column-wizard.get-options
+                method: getResolverClass

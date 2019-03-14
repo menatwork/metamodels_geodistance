@@ -1,64 +1,70 @@
 {
-  "name": "metamodels/attribute_geodistance",
-  "description": "MetaModels attribute for geo distance values",
-  "keywords": [
-    "contao",
-    "metamodels",
-    "attribute",
-    "numeric",
-    "geo",
-    "distance"
-  ],
-  "type": "contao-module",
-  "homepage": "http://now.metamodel.me/",
-  "license": "LGPL-3.0-or-later",
-  "authors": [
-    {
-      "name": "Stefan Heimes",
-      "email": "stefan_heimes@hotmail.com",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "email": "mail@metamodel.me",
-    "issues": "https://github.com/MetaModels/attribute_geodistance/issues",
-    "wiki": "http://de.contaowiki.org/MetaModels",
-    "irc": "irc://irc.freenode.org/contao.mm",
-    "source": "https://github.com/MetaModels/attribute_geodistance"
-  },
-  "require": {
-    "php": "^5.6 || ^7.0",
-    "contao-community-alliance/composer-plugin": "^2.4",
-    "contao-community-alliance/dc-general": "^2.0.0",
-    "contao/core": "^3.5.5",
-    "menatwork/contao-multicolumnwizard": "^3.3",
-    "metamodels/core": "^2.0",
-    "metamodels/filter_perimetersearch": "^2.0"
-  },
-  "require-dev": {
-    "metamodels/base-unit-tests": "^1.0.4",
-    "phpcq/all-tasks": "^1.2"
-  },
-  "autoload": {
-    "psr-0": {
-      "MetaModels\\": "src"
-    }
-  },
-  "extra": {
-    "contao": {
-      "sources": {
-        "contao": "system/modules/metamodelsattribute_geodistance"
-      },
-      "runonce": [
-        "runonce/runonce.php"
-      ]
+    "name": "metamodels/attribute_geodistance",
+    "description": "MetaModels attribute for geo distance values",
+    "keywords": [
+        "contao",
+        "metamodels",
+        "attribute",
+        "numeric",
+        "geo",
+        "distance"
+    ],
+    "type": "contao-bundle",
+    "homepage": "http://now.metamodel.me/",
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Stefan Heimes",
+            "email": "stefan_heimes@hotmail.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "mail@metamodel.me",
+        "issues": "https://github.com/MetaModels/attribute_geodistance/issues",
+        "wiki": "http://de.contaowiki.org/MetaModels",
+        "irc": "irc://irc.freenode.org/contao.mm",
+        "source": "https://github.com/MetaModels/attribute_geodistance"
     },
-    "branch-alias": {
-      "dev-master": "2.0.x-dev",
-      "dev-develop": "2.1.x-dev"
+    "require": {
+        "php": "^7.1",
+        "contao-community-alliance/dc-general": "^2.1.0",
+        "contao/core-bundle": "^4.4.8",
+        "doctrine/dbal": "^2.5",
+        "menatwork/contao-multicolumnwizard-bundle": "^3.4",
+        "metamodels/core": "^2.1",
+        "metamodels/filter_perimetersearch": "^2.1",
+        "symfony/dependency-injection": "^3.3 || ^4.0",
+        "symfony/http-kernel": "^3.3 || ^4.0",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.1",
+        "phpcq/all-tasks": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "MetaModels\\AttributeGeoDistanceBundle\\": "src"
+        },
+        "files": [
+            "src/deprecated-autoload.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MetaModels\\AttributeGeoDistanceBundle\\Test\\": "tests/Test"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "MetaModels\\AttributeGeoDistanceBundle\\ContaoManager\\Plugin",
+        "runonce": [
+            "runonce/runonce.php"
+        ],
+        "branch-alias": {
+            "dev-master": "2.1.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
     }
-  },
-  "config": {
-    "sort-packages": true
-  }
 }
