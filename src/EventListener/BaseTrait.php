@@ -31,9 +31,7 @@ trait BaseTrait
      * Check if the current context is valid.
      *
      * @param GetPropertyOptionsEvent|GetOptionsEvent $event              The event.
-     *
      * @param string                                  $dataDefinitionName The allowed name of the data definition.
-     *
      * @param array                                   $properties         A list of allowed properties.
      *
      * @return bool

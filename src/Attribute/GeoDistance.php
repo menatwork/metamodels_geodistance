@@ -21,7 +21,6 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 
-use Contao\Database;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
@@ -170,7 +169,6 @@ class GeoDistance extends BaseComplex
      * Run the search for the complex attribute geolocation.
      *
      * @param Container $container The container with all information.
-     *
      * @param array     $idList    A list with ids.
      *
      * @return array A list with all sorted id's.
@@ -215,11 +213,8 @@ class GeoDistance extends BaseComplex
      * Run the search for the complex attribute geolocation.
      *
      * @param Container  $container     The container with all information.
-     *
      * @param array      $idList        The list with the current ID's.
-     *
      * @param IAttribute $latAttribute  The attribute to filter on.
-     *
      * @param IAttribute $longAttribute The attribute to filter on.
      *
      * @return array A list with all sorted id's.
@@ -262,7 +257,6 @@ class GeoDistance extends BaseComplex
      * User the provider classes to make a look up.
      *
      * @param string $address The full address to search for.
-     *
      * @param string $country The country as 2-letters form.
      *
      * @return Container|null Return the container with all information or null on error.
@@ -458,9 +452,7 @@ class GeoDistance extends BaseComplex
      *
      * @param string[]|null $idList   The ids of items that the values shall be fetched from
      *                                (If empty or null, all items).
-     *
      * @param bool          $usedOnly Determines if only "used" values shall be returned.
-     *
      * @param array|null    $arrCount Array for the counted values.
      *
      * @return array All options matching the given conditions as name => value.
