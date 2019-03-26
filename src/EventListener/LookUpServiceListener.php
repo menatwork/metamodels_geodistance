@@ -20,6 +20,7 @@
 namespace MetaModels\AttributeGeoDistanceBundle\EventListener;
 
 use MenAtWork\MultiColumnWizardBundle\Event\GetOptionsEvent;
+use MetaModels\FilterPerimetersearchBundle\FilterHelper\Coordinates;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -65,11 +66,14 @@ class LookUpServiceListener
             return;
         }
 
-        $resolveClass = (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'];
+        $resolveClasses = \array_merge(
+            ['coordinates' => Coordinates::class],
+            (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class']
+        );
 
         $domain  = 'tl_metamodel_attribute';
         $options = [];
-        foreach (\array_keys($resolveClass) as $name) {
+        foreach (\array_keys($resolveClasses) as $name) {
             $options[$name] = $this->translator->trans($domain . '.perimetersearch.' . $name, [], 'contao_' . $domain);
         }
 

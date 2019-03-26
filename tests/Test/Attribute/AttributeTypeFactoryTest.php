@@ -20,6 +20,7 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\Test\Attribute;
 
+use Contao\CoreBundle\Framework\Adapter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
 use MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory;
@@ -98,8 +99,9 @@ class AttributeTypeFactoryTest extends TestCase
         $driver           = $this->getMockBuilder(Driver::class)->getMock();
         $connection       = $this->getMockBuilder(Connection::class)->setConstructorArgs([[], $driver])->getMock();
         $tableManipulator = new TableManipulator($connection, []);
+        $adapter          = $this->getMockBuilder(Adapter::class)->disableOriginalConstructor()->getMock();
 
-        $factory = new AttributeTypeFactory($connection, $tableManipulator);
+        $factory = new AttributeTypeFactory($connection, $tableManipulator, $adapter);
 
         return $factory;
     }

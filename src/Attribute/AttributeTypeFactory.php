@@ -20,6 +20,7 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 
+use Contao\CoreBundle\Framework\Adapter;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
 use MetaModels\Helper\TableManipulator;
@@ -30,14 +31,31 @@ use MetaModels\Helper\TableManipulator;
 class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 {
     /**
+     * The input provider.
+     *
+     * @var Adapter
+     */
+    private $input;
+
+    /**
      * {@inheritDoc}
      */
-    public function __construct(Connection $connection, TableManipulator $tableManipulator)
+    public function __construct(Connection $connection, TableManipulator $tableManipulator, Adapter $input = null)
     {
         parent::__construct($connection, $tableManipulator);
+
+        $this->input = $input;
 
         $this->typeName  = 'geodistance';
         $this->typeIcon  = 'bundles/metamodelsattributegeodistance/image/numeric.png';
         $this->typeClass = GeoDistance::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createInstance($information, $metaModel)
+    {
+        return new $this->typeClass($metaModel, $information, $this->connection, $this->tableManipulator, $this->input);
     }
 }

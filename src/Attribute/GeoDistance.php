@@ -21,14 +21,16 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 
-use Contao\Input;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\StringUtil;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\FilterPerimetersearchBundle\Helper\SphericalDistance;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
+use MetaModels\FilterPerimetersearchBundle\FilterHelper\Coordinates;
+use MetaModels\FilterPerimetersearchBundle\Helper\HaversineSphericalDistance;
+use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 
 /**
@@ -36,7 +38,6 @@ use MetaModels\IMetaModel;
  */
 class GeoDistance extends BaseComplex
 {
-
     /**
      * The database connection.
      *
@@ -45,18 +46,40 @@ class GeoDistance extends BaseComplex
     private $connection;
 
     /**
+     * The table manipulator.
+     *
+     * @var TableManipulator
+     */
+    private $tableManipulator;
+
+    /**
+     * The input provider.
+     *
+     * @var Adapter
+     */
+    private $input;
+
+    /**
      * Instantiate an MetaModel attribute.
      *
      * Note that you should not use this directly but use the factory classes to instantiate attributes.
      *
-     * @param IMetaModel $metaModel    The MetaModel instance this attribute belongs to.
-     * @param array      $data         The information array, for attribute information, refer to documentation of
-     *                                 table tl_metamodel_attribute and documentation of the certain attribute
-     *                                 classes for information what values are understood.
-     * @param Connection $connection   The database connection.
+     * @param IMetaModel            $metaModel        The MetaModel instance this attribute belongs to.
+     * @param array $data                             The information array, for attribute information, refer to
+     *                                                documentation of table tl_metamodel_attribute and documentation
+     *                                                of the certain attribute classes for information what values are
+     *                                                understood.
+     * @param Connection|null       $connection       The database connection.
+     * @param TableManipulator|null $tableManipulator The table manipulator.
+     * @param Adapter|null          $input            The input provider.
      */
-    public function __construct(IMetaModel $metaModel, array $data = [], Connection $connection = null)
-    {
+    public function __construct(
+        IMetaModel $metaModel,
+        array $data = [],
+        Connection $connection = null,
+        TableManipulator $tableManipulator = null,
+        Adapter $input = null
+    ) {
         parent::__construct($metaModel, $data);
 
         if (null === $connection) {
@@ -66,12 +89,22 @@ class GeoDistance extends BaseComplex
                 E_USER_DEPRECATED
             );
             // @codingStandardsIgnoreEnd
-            $this->connection = System::getContainer()->get('database_connection');
-
-            return;
+            $connection = System::getContainer()->get('database_connection');
         }
 
-        $this->connection = $connection;
+        if (null === $input) {
+            // @codingStandardsIgnoreStart
+            @\trigger_error(
+                'Request is missing. It has to be passed in the constructor. Fallback will be dropped.',
+                E_USER_DEPRECATED
+            );
+            // @codingStandardsIgnoreEnd
+            $input = System::getContainer()->get('metamodels.contao_input');
+        }
+
+        $this->connection       = $connection;
+        $this->tableManipulator = $tableManipulator;
+        $this->input            = $input;
     }
 
     /**
@@ -101,7 +134,7 @@ class GeoDistance extends BaseComplex
         }
 
         // Get the params.
-        $geo  = Input::get($getGeo);
+        $geo  = $this->input->get($getGeo);
         $land = $this->getCountryInformation();
 
         // Check if we have some geo params.
@@ -127,7 +160,7 @@ class GeoDistance extends BaseComplex
         $getGeo = $this->get('get_geo');
 
         // Get the params.
-        $geo  = Input::get($getGeo);
+        $geo  = $this->input->get($getGeo);
         $land = $this->getCountryInformation();
 
         try {
@@ -178,21 +211,24 @@ class GeoDistance extends BaseComplex
     protected function doSearchForAttGeolocation($container, $idList)
     {
         // Calculate distance, bearing and more between Latitude/Longitude points
-        $distanceCalculation = SphericalDistance::getHaversineFormulaAsQueryPart(
+        $distanceCalculation = HaversineSphericalDistance::getFormulaAsQueryPart(
             $container->getLatitude(),
             $container->getLongitude(),
-            'latitude',
-            'longitude',
+            $this->connection->quoteIdentifier('latitude'),
+            $this->connection->quoteIdentifier('longitude'),
             2
         );
 
-        $builder = $this->connection->createQueryBuilder();
+        $idField       = $this->connection->quoteIdentifier('id');
+        $itemDistField = $this->connection->quoteIdentifier('item_dist');
+        $attIdField    = $this->connection->quoteIdentifier('att_id');
+        $builder       = $this->connection->createQueryBuilder();
         $builder
-            ->select('id', $distanceCalculation . ' item_dist')
-            ->from('tl_metamodel_geolocation')
-            ->where($builder->expr()->in('id', ':idList'))
-            ->andWhere('att_id', ':attributeID')
-            ->orderBy('item_dist')
+            ->select($idField, $distanceCalculation . ' '. $itemDistField)
+            ->from($this->connection->quoteIdentifier('tl_metamodel_geolocation'))
+            ->where($builder->expr()->in($idField, ':idList'))
+            ->andWhere($builder->expr()->eq($attIdField, ':attributeID'))
+            ->orderBy($this->connection->quoteIdentifier($itemDistField))
             ->setParameter('idList', $idList, Connection::PARAM_STR_ARRAY)
             ->setParameter('attributeID', $this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
@@ -224,20 +260,22 @@ class GeoDistance extends BaseComplex
     protected function doSearchForTwoSimpleAtt($container, $idList, $latAttribute, $longAttribute)
     {
         // Calculate distance, bearing and more between Latitude/Longitude points
-        $distanceCalculation = SphericalDistance::getHaversineFormulaAsQueryPart(
+        $distanceCalculation = HaversineSphericalDistance::getFormulaAsQueryPart(
             $container->getLatitude(),
             $container->getLongitude(),
-            $latAttribute->getColName(),
-            $longAttribute->getColName(),
+            $this->connection->quoteIdentifier($latAttribute->getColName()),
+            $this->connection->quoteIdentifier($longAttribute->getColName()),
             2
         );
 
-        $builder = $this->connection->createQueryBuilder();
+        $idField       = $this->connection->quoteIdentifier('id');
+        $itemDistField = $this->connection->quoteIdentifier('item_dist');
+        $builder       = $this->connection->createQueryBuilder();
         $builder
-            ->select('id', $distanceCalculation . ' item_dist')
-            ->from($this->getMetaModel()->getTableName())
-            ->where($builder->expr()->in('id', ':idList'))
-            ->orderBy('item_dist')
+            ->select($idField, $distanceCalculation . ' ' . $itemDistField)
+            ->from($this->connection->quoteIdentifier($this->getMetaModel()->getTableName()))
+            ->where($builder->expr()->in($idField, ':idList'))
+            ->orderBy($itemDistField)
             ->setParameter('idList', $idList, Connection::PARAM_STR_ARRAY);
 
         $statement = $builder->execute();
@@ -325,12 +363,17 @@ class GeoDistance extends BaseComplex
      */
     protected function getObjectFromName($lookupClassName)
     {
+        $resolveClasses = \array_merge(
+            ['coordinates' => Coordinates::class],
+            (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class']
+        );
+
         // Check if we know this class.
-        if (!isset($GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'][$lookupClassName])) {
+        if (!isset($resolveClasses[$lookupClassName])) {
             return null;
         }
 
-        $reflectionName = $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'][$lookupClassName];
+        $reflectionName = $resolveClasses[$lookupClassName];
         $reflection     = new \ReflectionClass($reflectionName);
 
         // Fetch singleton instance.
@@ -363,12 +406,12 @@ class GeoDistance extends BaseComplex
     protected function addToCache($address, $country, $result)
     {
         $this->connection->insert(
-            'tl_metamodel_perimetersearch',
+            $this->connection->quoteIdentifier('tl_metamodel_perimetersearch'),
             [
-                'search'   => $address,
-                'country'  => $country,
-                'geo_lat'  => $result->getLatitude(),
-                'geo_long' => $result->getLongitude()
+                $this->connection->quoteIdentifier('search')   => $address,
+                $this->connection->quoteIdentifier('country')  => $country,
+                $this->connection->quoteIdentifier('geo_lat')  => $result->getLatitude(),
+                $this->connection->quoteIdentifier('geo_long') => $result->getLongitude()
             ]
         );
     }
@@ -386,9 +429,9 @@ class GeoDistance extends BaseComplex
         $builder = $this->connection->createQueryBuilder();
         $builder
             ->select('*')
-            ->from('tl_metamodel_perimetersearch')
-            ->where($builder->expr()->eq('search', ':search'))
-            ->andWhere($builder->expr()->eq('country', ':country'))
+            ->from($this->connection->quoteIdentifier('tl_metamodel_perimetersearch'))
+            ->where($builder->expr()->eq($this->connection->quoteIdentifier('search'), ':search'))
+            ->andWhere($builder->expr()->eq($this->connection->quoteIdentifier('country'), ':country'))
             ->setParameter('search', $address)
             ->setParameter('country', $country);
 
@@ -537,7 +580,7 @@ class GeoDistance extends BaseComplex
         $country = null;
 
         if (('get' === $this->get('countrymode')) && $this->get('country_get')) {
-            $getValue = Input::get($this->get('country_get')) ?: Input::post($this->get('country_get'));
+            $getValue = $this->input->get($this->get('country_get')) ?: $this->input->post($this->get('country_get'));
             $getValue = \trim($getValue);
             if (!empty($getValue)) {
                 $country = $getValue;
