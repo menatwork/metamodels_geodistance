@@ -87,5 +87,6 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['countrymode_options']['get']     
 /**
  * Lookup names
  */
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['google_maps']      = 'GoogleMaps Lookup';
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['open_street_maps'] = 'OpenStreetMap';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['coordinates']      = 'Coordinates input';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['google_maps']      = 'GoogleMaps lookup';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['open_street_maps'] = 'OpenStreetMap lookup';

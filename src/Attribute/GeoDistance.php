@@ -28,6 +28,7 @@ use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
+use MetaModels\FilterPerimetersearchBundle\FilterHelper\Coordinates;
 use MetaModels\FilterPerimetersearchBundle\Helper\HaversineSphericalDistance;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
@@ -362,12 +363,17 @@ class GeoDistance extends BaseComplex
      */
     protected function getObjectFromName($lookupClassName)
     {
+        $resolveClasses = \array_merge(
+            ['coordinates' => Coordinates::class],
+            (array) $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class']
+        );
+
         // Check if we know this class.
-        if (!isset($GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'][$lookupClassName])) {
+        if (!isset($resolveClasses[$lookupClassName])) {
             return null;
         }
 
-        $reflectionName = $GLOBALS['METAMODELS']['filters']['perimetersearch']['resolve_class'][$lookupClassName];
+        $reflectionName = $resolveClasses[$lookupClassName];
         $reflection     = new \ReflectionClass($reflectionName);
 
         // Fetch singleton instance.
