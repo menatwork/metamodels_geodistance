@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['get_geo'] = [
     'eval'      => [
         'tl_class' => 'w50',
         'mandatory'          => true
-    ],
+    ]
 ];
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['countrymode'] = [
@@ -68,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['countrymode'] = [
         'doNotSaveEmpty' => true,
         'alwaysSave'     => true,
         'submitOnChange' => true,
-        'mandatory'      => true,
+        'mandatory'      => true
     ],
     'sql'      => 'varchar(255) NOT NULL default \'\''
 ];
@@ -114,7 +114,7 @@ if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
                         'includeBlankOption' => true,
                         'mandatory'          => true,
                         'chosen'             => true,
-                        'style'              => 'width:250px',
+                        'style'              => 'width:250px'
                     ]
                 ],
                 'apiToken' => [
@@ -125,9 +125,9 @@ if (count((array) $GLOBALS['METAMODELS']['filters']['perimetersearch'])) {
                         'tl_class' => 'w50'
                     ]
                 ]
-            ],
+            ]
         ],
-        'explanation' => 'attribute_lookupservice',
+        'explanation' => 'attribute_lookupservice'
     ];
 }
 
@@ -144,7 +144,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['datamode'] = [
         'submitOnChange'     => true,
         'includeBlankOption' => true,
         'mandatory'          => true,
-        'tl_class'           => 'clr',
+        'tl_class'           => 'clr'
     ]
 ];
 

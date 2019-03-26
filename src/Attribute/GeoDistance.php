@@ -36,7 +36,6 @@ use MetaModels\IMetaModel;
  */
 class GeoDistance extends BaseComplex
 {
-
     /**
      * The database connection.
      *

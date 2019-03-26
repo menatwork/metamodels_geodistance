@@ -20,13 +20,13 @@
 
 $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['numeric'] = [
     'presentation' => [
-        'tl_class',
+        'tl_class'
     ],
     'functions'    => [
-        'mandatory',
+        'mandatory'
     ],
     'overview'     => [
         'filterable',
-        'searchable',
-    ],
+        'searchable'
+    ]
 ];
