@@ -21,14 +21,15 @@
 
 namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 
-use Contao\Input;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\StringUtil;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\FilterPerimetersearchBundle\Helper\SphericalDistance;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
+use MetaModels\FilterPerimetersearchBundle\Helper\SphericalDistance;
+use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 
 /**
@@ -44,18 +45,39 @@ class GeoDistance extends BaseComplex
     private $connection;
 
     /**
+     * The table manipulator.
+     *
+     * @var TableManipulator
+     */
+    private $tableManipulator;
+
+    /**
+     * The input provider.
+     *
+     * @var Adapter
+     */
+    private $input;
+
+    /**
      * Instantiate an MetaModel attribute.
      *
      * Note that you should not use this directly but use the factory classes to instantiate attributes.
      *
-     * @param IMetaModel $metaModel    The MetaModel instance this attribute belongs to.
-     * @param array      $data         The information array, for attribute information, refer to documentation of
-     *                                 table tl_metamodel_attribute and documentation of the certain attribute
-     *                                 classes for information what values are understood.
-     * @param Connection $connection   The database connection.
+     * @param IMetaModel            $metaModel        The MetaModel instance this attribute belongs to.
+     * @param array                 $data             The information array, for attribute information, refer to documentation of
+     *                                                table tl_metamodel_attribute and documentation of the certain attribute
+     *                                                classes for information what values are understood.
+     * @param Connection|null       $connection       The database connection.
+     * @param TableManipulator|null $tableManipulator The table manipulator.
+     * @param Adapter|null          $input            The input provider.
      */
-    public function __construct(IMetaModel $metaModel, array $data = [], Connection $connection = null)
-    {
+    public function __construct(
+        IMetaModel $metaModel,
+        array $data = [],
+        Connection $connection = null,
+        TableManipulator $tableManipulator = null,
+        Adapter $input = null
+    ) {
         parent::__construct($metaModel, $data);
 
         if (null === $connection) {
@@ -65,12 +87,22 @@ class GeoDistance extends BaseComplex
                 E_USER_DEPRECATED
             );
             // @codingStandardsIgnoreEnd
-            $this->connection = System::getContainer()->get('database_connection');
-
-            return;
+            $connection = System::getContainer()->get('database_connection');
         }
 
-        $this->connection = $connection;
+        if (null === $input) {
+            // @codingStandardsIgnoreStart
+            @\trigger_error(
+                'Request is missing. It has to be passed in the constructor. Fallback will be dropped.',
+                E_USER_DEPRECATED
+            );
+            // @codingStandardsIgnoreEnd
+            $input = System::getContainer()->get('metamodels.contao_input');
+        }
+
+        $this->connection       = $connection;
+        $this->tableManipulator = $tableManipulator;
+        $this->input            = $input;
     }
 
     /**
@@ -100,7 +132,7 @@ class GeoDistance extends BaseComplex
         }
 
         // Get the params.
-        $geo  = Input::get($getGeo);
+        $geo  = $this->input->get($getGeo);
         $land = $this->getCountryInformation();
 
         // Check if we have some geo params.
@@ -126,7 +158,7 @@ class GeoDistance extends BaseComplex
         $getGeo = $this->get('get_geo');
 
         // Get the params.
-        $geo  = Input::get($getGeo);
+        $geo  = $this->input->get($getGeo);
         $land = $this->getCountryInformation();
 
         try {
@@ -536,7 +568,7 @@ class GeoDistance extends BaseComplex
         $country = null;
 
         if (('get' === $this->get('countrymode')) && $this->get('country_get')) {
-            $getValue = Input::get($this->get('country_get')) ?: Input::post($this->get('country_get'));
+            $getValue = $this->input->get($this->get('country_get')) ?: $this->input->post($this->get('country_get'));
             $getValue = \trim($getValue);
             if (!empty($getValue)) {
                 $country = $getValue;
