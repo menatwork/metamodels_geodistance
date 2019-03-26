@@ -28,7 +28,7 @@ use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\BaseComplex;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\FilterPerimetersearchBundle\FilterHelper\Container;
-use MetaModels\FilterPerimetersearchBundle\Helper\SphericalDistance;
+use MetaModels\FilterPerimetersearchBundle\Helper\HaversineSphericalDistance;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 
@@ -209,7 +209,7 @@ class GeoDistance extends BaseComplex
     protected function doSearchForAttGeolocation($container, $idList)
     {
         // Calculate distance, bearing and more between Latitude/Longitude points
-        $distanceCalculation = SphericalDistance::getHaversineFormulaAsQueryPart(
+        $distanceCalculation = HaversineSphericalDistance::getFormulaAsQueryPart(
             $container->getLatitude(),
             $container->getLongitude(),
             'latitude',
@@ -255,7 +255,7 @@ class GeoDistance extends BaseComplex
     protected function doSearchForTwoSimpleAtt($container, $idList, $latAttribute, $longAttribute)
     {
         // Calculate distance, bearing and more between Latitude/Longitude points
-        $distanceCalculation = SphericalDistance::getHaversineFormulaAsQueryPart(
+        $distanceCalculation = HaversineSphericalDistance::getFormulaAsQueryPart(
             $container->getLatitude(),
             $container->getLongitude(),
             $latAttribute->getColName(),
