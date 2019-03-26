@@ -212,18 +212,21 @@ class GeoDistance extends BaseComplex
         $distanceCalculation = HaversineSphericalDistance::getFormulaAsQueryPart(
             $container->getLatitude(),
             $container->getLongitude(),
-            'latitude',
-            'longitude',
+            $this->connection->quoteIdentifier('latitude'),
+            $this->connection->quoteIdentifier('longitude'),
             2
         );
 
-        $builder = $this->connection->createQueryBuilder();
+        $idField       = $this->connection->quoteIdentifier('id');
+        $itemDistField = $this->connection->quoteIdentifier('item_dist');
+        $attIdField    = $this->connection->quoteIdentifier('att_id');
+        $builder       = $this->connection->createQueryBuilder();
         $builder
-            ->select('id', $distanceCalculation . ' item_dist')
-            ->from('tl_metamodel_geolocation')
-            ->where($builder->expr()->in('id', ':idList'))
-            ->andWhere('att_id', ':attributeID')
-            ->orderBy('item_dist')
+            ->select($idField, $distanceCalculation . ' '. $itemDistField)
+            ->from($this->connection->quoteIdentifier('tl_metamodel_geolocation'))
+            ->where($builder->expr()->in($idField, ':idList'))
+            ->andWhere($builder->expr()->eq($attIdField, ':attributeID'))
+            ->orderBy($this->connection->quoteIdentifier($itemDistField))
             ->setParameter('idList', $idList, Connection::PARAM_STR_ARRAY)
             ->setParameter('attributeID', $this->getMetaModel()->getAttribute($this->get('single_attr_id'))->get('id'));
 
@@ -258,17 +261,19 @@ class GeoDistance extends BaseComplex
         $distanceCalculation = HaversineSphericalDistance::getFormulaAsQueryPart(
             $container->getLatitude(),
             $container->getLongitude(),
-            $latAttribute->getColName(),
-            $longAttribute->getColName(),
+            $this->connection->quoteIdentifier($latAttribute->getColName()),
+            $this->connection->quoteIdentifier($longAttribute->getColName()),
             2
         );
 
-        $builder = $this->connection->createQueryBuilder();
+        $idField       = $this->connection->quoteIdentifier('id');
+        $itemDistField = $this->connection->quoteIdentifier('item_dist');
+        $builder       = $this->connection->createQueryBuilder();
         $builder
-            ->select('id', $distanceCalculation . ' item_dist')
-            ->from($this->getMetaModel()->getTableName())
-            ->where($builder->expr()->in('id', ':idList'))
-            ->orderBy('item_dist')
+            ->select($idField, $distanceCalculation . ' ' . $itemDistField)
+            ->from($this->connection->quoteIdentifier($this->getMetaModel()->getTableName()))
+            ->where($builder->expr()->in($idField, ':idList'))
+            ->orderBy($itemDistField)
             ->setParameter('idList', $idList, Connection::PARAM_STR_ARRAY);
 
         $statement = $builder->execute();
@@ -394,12 +399,12 @@ class GeoDistance extends BaseComplex
     protected function addToCache($address, $country, $result)
     {
         $this->connection->insert(
-            'tl_metamodel_perimetersearch',
+            $this->connection->quoteIdentifier('tl_metamodel_perimetersearch'),
             [
-                'search'   => $address,
-                'country'  => $country,
-                'geo_lat'  => $result->getLatitude(),
-                'geo_long' => $result->getLongitude()
+                $this->connection->quoteIdentifier('search')   => $address,
+                $this->connection->quoteIdentifier('country')  => $country,
+                $this->connection->quoteIdentifier('geo_lat')  => $result->getLatitude(),
+                $this->connection->quoteIdentifier('geo_long') => $result->getLongitude()
             ]
         );
     }
@@ -417,9 +422,9 @@ class GeoDistance extends BaseComplex
         $builder = $this->connection->createQueryBuilder();
         $builder
             ->select('*')
-            ->from('tl_metamodel_perimetersearch')
-            ->where($builder->expr()->eq('search', ':search'))
-            ->andWhere($builder->expr()->eq('country', ':country'))
+            ->from($this->connection->quoteIdentifier('tl_metamodel_perimetersearch'))
+            ->where($builder->expr()->eq($this->connection->quoteIdentifier('search'), ':search'))
+            ->andWhere($builder->expr()->eq($this->connection->quoteIdentifier('country'), ':country'))
             ->setParameter('search', $address)
             ->setParameter('country', $country);
 
