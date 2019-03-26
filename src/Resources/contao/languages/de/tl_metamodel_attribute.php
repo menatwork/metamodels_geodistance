@@ -1,15 +1,25 @@
 <?php
 /**
- * Translations are managed using Transifex. To create a new translation
+ * This file is part of MetaModels/attribute_geodistance.
+ *
+ * (c) 2012-2019 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * Translations are managed automatically using Transifex. To create a new translation
  * or to help to maintain an existing one, please register at transifex.com.
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * Last-updated: 2019-03-26T19:48:22+01:00
  *
- * @link https://www.transifex.com/signup/
- * @link https://www.transifex.com/projects/p/$$project$$/language/de/
- *
- * last-updated: 2018-07-11T13:19:31+02:00
+ * @copyright 2012-2019 The MetaModels team.
+ * @license   https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
+ * @link      https://www.transifex.com/metamodels/public/
+ * @link      https://www.transifex.com/signup/?join_project=metamodels
  */
+
 
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']['0']                    = 'GET-Parameter für Land';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['country_get']['1']                    = 'Hier können Sie einen GET-Parameter für ein Land vorgeben.';
@@ -36,6 +46,7 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['1']             
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']['0']     = 'API Token';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['lookupservice']['api_token']['1']     = 'Hier können Sie ein API-Token angeben.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['parameter_legend']                    = 'Adressen-Parameter';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['coordinates']      = 'Koordinateneingabe';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['google_maps']      = 'GoogleMaps-Koordinatensuche';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['perimetersearch']['open_street_maps'] = 'OpenStreetMap-Koordinatensuche';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['second_attr_id']['0']                 = 'Attribut - geografische Länge (Lng)';
