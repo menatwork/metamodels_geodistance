@@ -18,15 +18,15 @@
  * @filesource
  */
 
-$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][0][0]     = 'GoogleMaps lookup';
-$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][0][1]     =
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][0][0] = 'Coordinates input';
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][0][1] =
+    'This service uses existing latitude and longitude values of a geopoint without further lookup.<br>
+   A comma separated signed decimal pair of latitude and longitude is expected - e.g. "52.520008,13.404954" or "-31.950527,115.860458".';
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][1][0] = 'GoogleMaps lookup';
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][1][1] =
     'GoogleMap lookup service to determine the geocoordinates of an address.<br>
    If you use this service, you must add the API token usage.<br>
    <strong><a href="https://developers.google.com/maps/documentation/javascript/usage">Google Maps API</a></strong>';
-$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice']['1']['0'] = 'OpenStreetMap lookup';
-$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice']['1']['1'] =
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][2][0] = 'OpenStreetMap lookup';
+$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice'][2][1] =
     'OpenStreetMap lookup service to determine the geocoordinates of an address.';
-$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice']['2']['0'] = 'Coordinates input';
-$GLOBALS['TL_LANG']['XPL']['attribute_lookupservice']['2']['1'] =
-    'This service uses existing latitude and longitude values of a geopoint without further lookup.<br>
-   A comma separated signed decimal pair of latitude and longitude is expected - e.g. "52.520008,13.404954" or "-31.950527,115.860458".';
