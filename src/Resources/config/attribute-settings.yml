@@ -1,8 +1,9 @@
 services:
-    metamodels.attribute_geodistance.factory:
-        class: MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory
-        arguments:
-            - "@database_connection"
-            - "@metamodels.table_manipulator"
-        tags:
-          - { name: metamodels.attribute_factory }
+  metamodels.attribute_geodistance.factory:
+    class: MetaModels\AttributeGeoDistanceBundle\Attribute\AttributeTypeFactory
+    arguments:
+      - "@database_connection"
+      - "@metamodels.table_manipulator"
+      - "@metamodels.contao_input"
+    tags:
+      - { name: metamodels.attribute_factory }
