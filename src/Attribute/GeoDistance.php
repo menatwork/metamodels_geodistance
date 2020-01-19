@@ -14,6 +14,7 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -22,6 +23,7 @@
 namespace MetaModels\AttributeGeoDistanceBundle\Attribute;
 
 use Contao\CoreBundle\Framework\Adapter;
+use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
 use Doctrine\DBAL\Connection;
@@ -34,7 +36,7 @@ use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 
 /**
- * This is the MetaModelAttribute class for handling numeric fields.
+ * This is the MetaModelAttribute class for handling geodistance fields.
  */
 class GeoDistance extends BaseComplex
 {
@@ -99,7 +101,7 @@ class GeoDistance extends BaseComplex
                 E_USER_DEPRECATED
             );
             // @codingStandardsIgnoreEnd
-            $input = System::getContainer()->get('metamodels.contao_input');
+            $input = System::getContainer()->get('contao.framework')->getAdapter(Input::class);
         }
 
         $this->connection       = $connection;
