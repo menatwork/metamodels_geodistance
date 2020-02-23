@@ -13,6 +13,7 @@
  * @package    MetaModels/attribute_geodistance
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_geodistance/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -26,7 +27,7 @@ use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
 use MetaModels\Helper\TableManipulator;
 
 /**
- * Attribute type factory for numeric attributes.
+ * Attribute type factory for geodistance attributes.
  */
 class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 {
