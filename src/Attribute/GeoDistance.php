@@ -117,6 +117,38 @@ class GeoDistance extends BaseComplex
     protected static $data = [];
 
     /**
+     * Run the geolocation and distance core function.
+     *
+     * @param array $idList The list of id's
+     *
+     * @return array The new list of id's
+     *
+     * @throws \RuntimeException If something is missing.
+     */
+    protected function runGeodistance($idList)
+    {
+        // Get some settings.
+        $getGeo  = $this->get('get_geo');
+        $service = $this->get('lookupservice');
+
+        // Check if we have a get param.
+        if (empty($getGeo) || empty($service)) {
+            throw new \RuntimeException('Missing informations for geo location.');
+        }
+
+        // Get the params.
+        $geo  = $this->input->get($getGeo);
+        $land = $this->getCountryInformation();
+
+        // Check if we have some geo params.
+        if (empty($geo) && (null === $land)) {
+            throw new \RuntimeException('Missing geo parameter for geo location.');
+        }
+
+        return $this->matchIdList($idList);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function sortIds($idList, $strDirection)
@@ -126,25 +158,15 @@ class GeoDistance extends BaseComplex
             return $idList;
         }
 
-        // Get some settings.
-        $getGeo  = $this->get('get_geo');
-        $service = $this->get('lookupservice');
-
-        // Check if we have a get param.
-        if (empty($getGeo) || empty($service)) {
-            return $idList;
+        if (!array_key_exists($this->id, self::$data)) {
+            try {
+                $this->matchIdList($idList);
+            } catch (\Exception $e) {
+                self::$data[$this->id] = [];
+            }
         }
 
-        // Get the params.
-        $geo  = $this->input->get($getGeo);
-        $land = $this->getCountryInformation();
-
-        // Check if we have some geo params.
-        if (empty($geo) && (null === $land)) {
-            return $idList;
-        }
-
-        return $this->matchIdList($idList);
+        return self::$data[$this->id];
     }
 
     /**
@@ -545,10 +567,18 @@ class GeoDistance extends BaseComplex
      */
     public function getDataFor($idList)
     {
+        if (!array_key_exists($this->id, self::$data)) {
+            try {
+                $this->matchIdList($idList);
+            } catch (\Exception $e) {
+                self::$data[$this->id] = [];
+            }
+        }
+
         $return = [];
         foreach ($idList as $id) {
-            if (isset(self::$data[$id])) {
-                $return[$id] = self::$data[$id];
+            if (isset(self::$data[$this->id][$id])) {
+                $return[$id] = self::$data[$this->id][$id];
             } else {
                 $return[$id] = -1;
             }
