@@ -158,15 +158,12 @@ class GeoDistance extends BaseComplex
             return $idList;
         }
 
-        if (!array_key_exists($this->id, self::$data)) {
-            try {
-                $this->matchIdList($idList);
-            } catch (\Exception $e) {
-                self::$data[$this->id] = [];
-            }
+        try {
+            return $this->runGeodistance($idList);
+        } catch (\Exception $e) {
+            self::$data[$this->id] = [];
+            return $idList;
         }
-
-        return self::$data[$this->id];
     }
 
     /**
