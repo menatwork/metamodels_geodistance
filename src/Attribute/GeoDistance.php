@@ -161,7 +161,7 @@ class GeoDistance extends BaseComplex
         try {
             return $this->runGeodistance($idList);
         } catch (\Exception $e) {
-            self::$data[$this->id] = [];
+            self::$data[$this->get('id')] = [];
             return $idList;
         }
     }
@@ -258,7 +258,7 @@ class GeoDistance extends BaseComplex
         $newIdList = [];
         foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
             $newIdList[]           = $item->id;
-            self::$data[$item->id] = $item->item_dist;
+            self::$data[$this->get('id')][$item->id] = $item->item_dist;
         }
 
         $diff = \array_diff($idList, $newIdList);
@@ -304,7 +304,7 @@ class GeoDistance extends BaseComplex
         $newIdList = [];
         foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
             $newIdList[]           = $item->id;
-            self::$data[$item->id] = $item->item_dist;
+            self::$data[$this->get('id')][$item->id] = $item->item_dist;
         }
 
         $diff = \array_diff($idList, $newIdList);
@@ -564,18 +564,18 @@ class GeoDistance extends BaseComplex
      */
     public function getDataFor($idList)
     {
-        if (!array_key_exists($this->id, self::$data)) {
+        if (!array_key_exists($this->get('id'), self::$data)) {
             try {
-                $this->matchIdList($idList);
+                $this->runGeodistance($idList);
             } catch (\Exception $e) {
-                self::$data[$this->id] = [];
+                self::$data[$this->get('id')] = [];
             }
         }
 
         $return = [];
         foreach ($idList as $id) {
-            if (isset(self::$data[$this->id][$id])) {
-                $return[$id] = self::$data[$this->id][$id];
+            if (isset(self::$data[$this->get('id')][$id])) {
+                $return[$id] = self::$data[$this->get('id')][$id];
             } else {
                 $return[$id] = -1;
             }
