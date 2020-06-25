@@ -67,7 +67,7 @@ class GeoDistance extends BaseComplex
      * Note that you should not use this directly but use the factory classes to instantiate attributes.
      *
      * @param IMetaModel            $metaModel        The MetaModel instance this attribute belongs to.
-     * @param array $data                             The information array, for attribute information, refer to
+     * @param array                 $data             The information array, for attribute information, refer to
      *                                                documentation of table tl_metamodel_attribute and documentation
      *                                                of the certain attribute classes for information what values are
      *                                                understood.
@@ -117,6 +117,38 @@ class GeoDistance extends BaseComplex
     protected static $data = [];
 
     /**
+     * Run the geolocation and distance core function.
+     *
+     * @param array $idList The list of id's
+     *
+     * @return array The new list of id's
+     *
+     * @throws \RuntimeException If something is missing.
+     */
+    protected function runGeodistance($idList)
+    {
+        // Get some settings.
+        $getGeo  = $this->get('get_geo');
+        $service = $this->get('lookupservice');
+
+        // Check if we have a get param.
+        if (empty($getGeo) || empty($service)) {
+            throw new \RuntimeException('Missing informations for geo location.');
+        }
+
+        // Get the params.
+        $geo  = $this->input->get($getGeo);
+        $land = $this->getCountryInformation();
+
+        // Check if we have some geo params.
+        if (empty($geo) && (null === $land)) {
+            throw new \RuntimeException('Missing geo parameter for geo location.');
+        }
+
+        return $this->matchIdList($idList);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function sortIds($idList, $strDirection)
@@ -126,25 +158,12 @@ class GeoDistance extends BaseComplex
             return $idList;
         }
 
-        // Get some settings.
-        $getGeo  = $this->get('get_geo');
-        $service = $this->get('lookupservice');
-
-        // Check if we have a get param.
-        if (empty($getGeo) || empty($service)) {
+        try {
+            return $this->runGeodistance($idList);
+        } catch (\Exception $e) {
+            self::$data[$this->get('id')] = [];
             return $idList;
         }
-
-        // Get the params.
-        $geo  = $this->input->get($getGeo);
-        $land = $this->getCountryInformation();
-
-        // Check if we have some geo params.
-        if (empty($geo) && (null === $land)) {
-            return $idList;
-        }
-
-        return $this->matchIdList($idList);
     }
 
     /**
@@ -238,8 +257,8 @@ class GeoDistance extends BaseComplex
 
         $newIdList = [];
         foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
-            $newIdList[]           = $item->id;
-            self::$data[$item->id] = $item->item_dist;
+            $newIdList[]                             = $item->id;
+            self::$data[$this->get('id')][$item->id] = $item->item_dist;
         }
 
         $diff = \array_diff($idList, $newIdList);
@@ -284,8 +303,8 @@ class GeoDistance extends BaseComplex
 
         $newIdList = [];
         foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
-            $newIdList[]           = $item->id;
-            self::$data[$item->id] = $item->item_dist;
+            $newIdList[]                             = $item->id;
+            self::$data[$this->get('id')][$item->id] = $item->item_dist;
         }
 
         $diff = \array_diff($idList, $newIdList);
@@ -492,7 +511,11 @@ class GeoDistance extends BaseComplex
      */
     public function getFieldDefinition($arrOverrides = [])
     {
-        return [];
+        $arrFieldDef                     = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['inputType']        = 'text';
+        $arrFieldDef['eval']['readonly'] = true;
+
+        return $arrFieldDef;
     }
 
     /**
@@ -545,10 +568,18 @@ class GeoDistance extends BaseComplex
      */
     public function getDataFor($idList)
     {
+        if (!array_key_exists($this->get('id'), self::$data)) {
+            try {
+                $this->runGeodistance($idList);
+            } catch (\Exception $e) {
+                self::$data[$this->get('id')] = [];
+            }
+        }
+
         $return = [];
         foreach ($idList as $id) {
-            if (isset(self::$data[$id])) {
-                $return[$id] = self::$data[$id];
+            if (isset(self::$data[$this->get('id')][$id])) {
+                $return[$id] = self::$data[$this->get('id')][$id];
             } else {
                 $return[$id] = -1;
             }
