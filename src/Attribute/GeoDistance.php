@@ -67,7 +67,7 @@ class GeoDistance extends BaseComplex
      * Note that you should not use this directly but use the factory classes to instantiate attributes.
      *
      * @param IMetaModel            $metaModel        The MetaModel instance this attribute belongs to.
-     * @param array $data                             The information array, for attribute information, refer to
+     * @param array                 $data             The information array, for attribute information, refer to
      *                                                documentation of table tl_metamodel_attribute and documentation
      *                                                of the certain attribute classes for information what values are
      *                                                understood.
@@ -257,7 +257,7 @@ class GeoDistance extends BaseComplex
 
         $newIdList = [];
         foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
-            $newIdList[]           = $item->id;
+            $newIdList[]                             = $item->id;
             self::$data[$this->get('id')][$item->id] = $item->item_dist;
         }
 
@@ -303,7 +303,7 @@ class GeoDistance extends BaseComplex
 
         $newIdList = [];
         foreach ($statement->fetchAll(\PDO::FETCH_OBJ) as $item) {
-            $newIdList[]           = $item->id;
+            $newIdList[]                             = $item->id;
             self::$data[$this->get('id')][$item->id] = $item->item_dist;
         }
 
