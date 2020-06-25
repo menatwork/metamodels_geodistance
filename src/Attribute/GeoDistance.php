@@ -511,7 +511,11 @@ class GeoDistance extends BaseComplex
      */
     public function getFieldDefinition($arrOverrides = [])
     {
-        return [];
+        $arrFieldDef                     = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['inputType']        = 'text';
+        $arrFieldDef['eval']['readonly'] = true;
+
+        return $arrFieldDef;
     }
 
     /**
